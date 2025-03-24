@@ -9,12 +9,12 @@ Feature: FlexCheck Calculator Functionality
 #@wip
   Scenario Outline: Calculate financing with different usage purposes
     When the user selects "<usage_purpose>" as usage purpose
-    And the user enters postal code "90017"
-    And the user enters purchase price "300000"
+    And the user enters postal code "string"
+    And the user enters purchase price "string"
     And the user selects "Einfamilienhaus" as property type
     And the user clicks on Weiter in Angaben zum Objekt page
-    And the user enters desired loan amount "250000"
-    And the user enters repayment percentage "2"
+    And the user enters desired loan amount "string"
+    And the user enters repayment percentage "string"
     And the user selects repayment type "Tilgung in %"
     And the user enters first payout date
     And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
@@ -42,12 +42,12 @@ Feature: FlexCheck Calculator Functionality
 #@wip
 Scenario Outline: Calculate financing with different property types
     When the user selects "Kauf" as usage purpose
-    And the user enters postal code "90017"
-    And the user enters purchase price "300000"
+    And the user enters postal code "string"
+    And the user enters purchase price "string"
     And the user selects "<property_type>" as property type
     And the user clicks on Weiter in Angaben zum Objekt page
-    And the user enters desired loan amount "250000"
-    And the user enters repayment percentage "2"
+    And the user enters desired loan amount "string"
+    And the user enters repayment percentage "string"
     And the user selects repayment type "Tilgung in %"
     And the user enters first payout date
     And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
@@ -75,13 +75,13 @@ Scenario Outline: Calculate financing with different property types
 #@wip
   Scenario: Calculate financing with different usage purposes
     When the user selects "Kauf" as usage purpose
-    And the user enters postal code "90017"
-    And the user enters purchase price "300000"
+    And the user enters postal code "string"
+    And the user enters purchase price "string"
     And the user selects "Einfamilienhaus" as property type
     And the user clicks on Weiter in Angaben zum Objekt page
-    And the user enters desired loan amount "250000"
+    And the user enters desired loan amount "string"
     And the user selects repayment type "monatliche Rate"
-    And the user enters monthly payment "1000"
+    And the user enters monthly payment "string"
     And the user enters first payout date
     And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
     Then the user should see the calculation results
@@ -98,11 +98,11 @@ Scenario Outline: Calculate financing with different property types
 #@wip
   Scenario Outline: Calculate financing with different usage purposes
     When the user selects "Kauf" as usage purpose
-    And the user enters postal code "90017"
-    And the user enters purchase price "300000"
+    And the user enters postal code "string"
+    And the user enters purchase price "string"
     And the user selects "Einfamilienhaus" as property type
     And the user clicks on Weiter in Angaben zum Objekt page
-    And the user enters desired loan amount "250000"
+    And the user enters desired loan amount "string"
     And the user selects repayment type "Gesamtlaufzeit"
     And the user enters total term in years "<total_term_in_years>"
     And the user enters total term in months "<total_term_in_months>"
@@ -126,15 +126,15 @@ Scenario Outline: Calculate financing with different property types
 
 
 
-@wip
+#@wip
   Scenario Outline: Calculate financing with different usage purposes
     When the user selects "Kauf" as usage purpose
-    And the user enters postal code "90017"
-    And the user enters purchase price "300000"
+    And the user enters postal code "string"
+    And the user enters purchase price "string"
     And the user selects "Einfamilienhaus" as property type
     And the user clicks on Weiter in Angaben zum Objekt page
-    And the user enters desired loan amount "250000"
-    And the user enters repayment percentage "2"
+    And the user enters desired loan amount "string"
+    And the user enters repayment percentage "string"
     And the user selects repayment type "Tilgung in %"
     And the user enters first payout date
     And the user clicks on Weiter in Angaben zum Finanzierungswunsch page

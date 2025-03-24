@@ -78,9 +78,9 @@ public class DokumentHochladenPage extends BasePage {
         waitForPageLoad();
         wait.until(ExpectedConditions.elementToBeClickable(dropZone));
         highlightElement(dropZone);
-        takeScreenshot("document-upload-before");
+        //takeScreenshot("document-upload-before");
         dropZone.sendKeys(filePath);
-        takeScreenshot("document-upload-after");
+        //takeScreenshot("document-upload-after");
     }
 
     public void selectDokumentTyp(String dokumentTyp) {
@@ -102,9 +102,9 @@ public class DokumentHochladenPage extends BasePage {
     public void clickWeiter() {
         waitForElementToBeClickable(weiterButton);
         highlightElement(weiterButton);
-        takeScreenshot("before_clicking_weiter");
+        //takeScreenshot("before_clicking_weiter");
         weiterButton.click();
-        takeScreenshot("after_clicking_weiter");
+        //takeScreenshot("after_clicking_weiter");
         logger.info("Clicked Weiter button on document upload page");
     }
 
@@ -157,11 +157,7 @@ public class DokumentHochladenPage extends BasePage {
     }
 
     public void uploadId() throws InterruptedException {
-        //WebDriverWait wait =new WebDriverWait(driver, Duration.ofSeconds(5));
-        //wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='docTransferDropzone']")));
         String filePath = System.getProperty("user.dir") + "/src/test/resources/testfiles/test-document.pdf";
-        //highlightElement(fileInput);    
-
         Thread.sleep(3000);
         try {
             WebElement dropzone = Driver.getDriver().findElement(By.className("dropzone__area"));
@@ -179,24 +175,18 @@ public class DokumentHochladenPage extends BasePage {
                 dropzone
             );
             
-            // Dosya yükleme işleminin tamamlanmasını bekle
             WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
             wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("upload-progress")));
             
         } catch (Exception e) {
-            logger.error("Dosya yükleme hatası: " + e.getMessage());
+            logger.error("File upload error: " + e.getMessage());
             throw e;
         }
 
-        //new Actions(driver).sendKeys(Keys.TAB);
-
-        takeScreenshot("before_uploading_id");
-        //fileInput.sendKeys(filePath);
-        //waitForUploadToComplete();
-        takeScreenshot("after_uploading_id");
+        //takeScreenshot("before_uploading_id");
+        //takeScreenshot("after_uploading_id");
 
         verifyFileUpload();
-
         logger.info("Successfully uploaded ID document from: {}", filePath);
     }
 
@@ -228,13 +218,11 @@ public class DokumentHochladenPage extends BasePage {
                 By.className("dropzone__area")
             ));
     
-            // Extract just the filename from the path
             String fileName = file.getName();
             
             JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
             js.executeScript(
                 "const dropzone = arguments[0];" +
-                // Create a proper file with content and correct name
                 "const blob = new Blob(['test content'], { type: 'application/pdf' });" +
                 "const file = new File([blob], arguments[1], { type: 'application/pdf' });" +
                 "const dataTransfer = new DataTransfer();" +
@@ -244,15 +232,12 @@ public class DokumentHochladenPage extends BasePage {
                 "  cancelable: true," +
                 "  dataTransfer: dataTransfer" +
                 "});" +
-                // Dispatch both dragover and drop events
                 "dropzone.dispatchEvent(new DragEvent('dragover', { bubbles: true, cancelable: true }));" +
                 "dropzone.dispatchEvent(event);" +
-                // Trigger any change events that might be needed
                 "dropzone.dispatchEvent(new Event('change', { bubbles: true }));",
                 dropzone, fileName
             );
     
-            // Wait for upload success message
             wait.until(ExpectedConditions.or(
                 ExpectedConditions.presenceOfElementLocated(
                     By.xpath("//div[contains(text(), '" + fileName + "')]")
@@ -262,7 +247,6 @@ public class DokumentHochladenPage extends BasePage {
                 )
             ));
     
-            // Wait for loading spinner to disappear
             wait.until(ExpectedConditions.invisibilityOfElementLocated(
                 By.xpath("//div[contains(text(), 'Ihre Daten werden übertragen')]")
             ));
@@ -273,7 +257,7 @@ public class DokumentHochladenPage extends BasePage {
             
         } catch (Exception e) {
             logger.error("File upload failed: " + e.getMessage());
-            takeScreenshot("upload_failure");
+            //takeScreenshot("upload_failure");
             throw e;
         }
     }
@@ -320,18 +304,15 @@ public class DokumentHochladenPage extends BasePage {
                 By.className("dropzone__area")
             ));
 
-            // Take screenshot before upload
-            takeScreenshot("before_upload");
+            //takeScreenshot("before_upload");
 
             JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
             js.executeScript(
                 "const dropzone = arguments[0];" +
-                // Create file with content
                 "const blob = new Blob(['test content'], { type: 'application/pdf' });" +
                 "const file = new File([blob], arguments[1], { type: 'application/pdf' });" +
                 "const dt = new DataTransfer();" +
                 "dt.items.add(file);" +
-                // Create and dispatch events
                 "dropzone.dispatchEvent(new DragEvent('dragenter', { bubbles: true }));" +
                 "dropzone.dispatchEvent(new DragEvent('dragover', { bubbles: true }));" +
                 "dropzone.dispatchEvent(new DragEvent('drop', {" +
@@ -342,7 +323,6 @@ public class DokumentHochladenPage extends BasePage {
                 dropzone, fileName
             );
 
-            // Wait for any of these success indicators
             wait.until(ExpectedConditions.or(
                 ExpectedConditions.presenceOfElementLocated(
                     By.xpath("//div[contains(text(), 'erfolgreich hochgeladen')]")
@@ -355,15 +335,12 @@ public class DokumentHochladenPage extends BasePage {
                 )
             ));
 
-            // Wait for loading message to disappear
             wait.until(ExpectedConditions.invisibilityOfElementLocated(
                 By.xpath("//div[contains(text(), 'Ihre Daten werden übertragen')]")
             ));
 
-            // Take screenshot after upload
-            takeScreenshot("after_upload");
+            //takeScreenshot("after_upload");
 
-            // Check for error messages
             List<WebElement> errorMessages = Driver.getDriver().findElements(
                 By.xpath("//div[contains(text(), 'konnte nicht hochgeladen werden')]")
             );
@@ -373,7 +350,6 @@ public class DokumentHochladenPage extends BasePage {
                 throw new RuntimeException("File upload failed: " + errorMessages.get(0).getText());
             }
 
-            // Verify upload success
             boolean uploadSuccess = Driver.getDriver().findElements(By.cssSelector(".document-item, .dz-success")).size() > 0;
             
             if (!uploadSuccess) {
@@ -386,13 +362,11 @@ public class DokumentHochladenPage extends BasePage {
         } catch (Exception e) {
             logger.error("File upload failed: " + e.getMessage());
             
-            // Log additional debugging information
             try {
-                takeScreenshot("upload_error");
+                //takeScreenshot("upload_error");
                 String pageSource = Driver.getDriver().getPageSource();
                 logger.debug("Page source at failure: {}", pageSource);
                 
-                // Log console errors
                 LogEntries logs = Driver.getDriver().manage().logs().get(LogType.BROWSER);
                 logs.getAll().forEach(log -> logger.debug("Browser Console: " + log.getMessage()));
                 
@@ -402,6 +376,31 @@ public class DokumentHochladenPage extends BasePage {
             
             throw new RuntimeException("File upload failed", e);
         }
+    }
+
+
+    public void uploadIdForNegativeTest() {
+        String filePath = System.getProperty("user.dir") + "/src/test/resources/testfiles/test-document.pdf";
+
+            //takeScreenshot("before_uploading_id");
+            WebElement dropzone = Driver.getDriver().findElement(By.className("dropzone__area"));
+           
+            JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
+            js.executeScript(
+                "const dropzone = arguments[0];" +
+                "const file = new File([''], '" + filePath + "');" +
+                "const dataTransfer = new DataTransfer();" +
+                "dataTransfer.items.add(file);" +
+                "const event = new DragEvent('drop', {" +
+                "  dataTransfer: dataTransfer" +
+                "});" +
+                "dropzone.dispatchEvent(event);",
+                dropzone);
+
+            logger.error("Dosya yükleme hatası: ");
+
+        //takeScreenshot("after_uploading_id");
+
     }
 
 } 

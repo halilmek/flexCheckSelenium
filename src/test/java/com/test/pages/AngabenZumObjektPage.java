@@ -3,6 +3,8 @@ package com.test.pages;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+
+import com.test.utilities.ConfigurationReader;
 import com.test.utilities.Driver;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -38,7 +40,12 @@ public class AngabenZumObjektPage extends BasePage {
 
 
     // Methods for interacting with web elements
+    public void navigatingToHomePage() {
+        driver.get(ConfigurationReader.getProperty("url"));
+        logger.info("Navigated to FlexCheck calculator page");
+    }
     
+
     /**
      * Selects the Verwendungszweck (Usage Purpose)
      * @param purpose the purpose to select
@@ -47,10 +54,8 @@ public class AngabenZumObjektPage extends BasePage {
         try {
             waitForElementToBeClickable(verwendungszweckDropdown);
             highlightElement(verwendungszweckDropdown);
-            takeScreenshot("before_selecting_purpose");
             Select select = new Select(verwendungszweckDropdown);
             select.selectByVisibleText(purpose);
-            takeScreenshot("after_selecting_purpose");
             logger.info("Selected usage purpose: {}", purpose);
         } catch (Exception e) {
             logger.error("Failed to select usage purpose: {}", e.getMessage());
@@ -65,10 +70,8 @@ public class AngabenZumObjektPage extends BasePage {
     public void enterPlz(String plz) {
         waitForElementToBeClickable(plzInput);
         highlightElement(plzInput);
-        takeScreenshot("before_entering_plz");
         plzInput.clear();
         plzInput.sendKeys(plz);
-        takeScreenshot("after_entering_plz");
         logger.info("Entered postal code: {}", plz);
     }
 
@@ -79,10 +82,8 @@ public class AngabenZumObjektPage extends BasePage {
     public void enterKaufpreis(String price) {
         waitForElementToBeClickable(kaufpreisInput);
         highlightElement(kaufpreisInput);
-        takeScreenshot("before_entering_price");
         kaufpreisInput.clear();
         kaufpreisInput.sendKeys(price);
-        takeScreenshot("after_entering_price");
         logger.info("Entered purchase price: {}", price);
     }
 
@@ -93,10 +94,8 @@ public class AngabenZumObjektPage extends BasePage {
     public void selectObjektart(String type) {
         waitForElementToBeClickable(objektartDropdown);
         highlightElement(objektartDropdown);
-        takeScreenshot("before_selecting_type");
         Select select = new Select(objektartDropdown);
         select.selectByVisibleText(type);
-        takeScreenshot("after_selecting_type");
         logger.info("Selected property type: {}", type);
     }
 
@@ -107,9 +106,7 @@ public class AngabenZumObjektPage extends BasePage {
          public void clickWeiter() throws InterruptedException {
         waitForElementToBeClickable(weiterButton);
         highlightElement(weiterButton);
-        takeScreenshot("before_clicking_weiter");
         weiterButton.click();
-        takeScreenshot("after_clicking_weiter");
         logger.info("Clicked Weiter button on object details page");
         Thread.sleep(2000);
     }

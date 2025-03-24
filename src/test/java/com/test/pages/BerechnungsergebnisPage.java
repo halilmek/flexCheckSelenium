@@ -38,9 +38,9 @@ public class BerechnungsergebnisPage extends BasePage {
         waitForResultsToLoad();
         wait.until(ExpectedConditions.elementToBeClickable(angebotAnfordernButton));
         highlightElement(angebotAnfordernButton);
-        takeScreenshot("angebotAnfordern-before");
+        //takeScreenshot("angebotAnfordern-before");
         angebotAnfordernButton.click();
-        takeScreenshot("angebotAnfordern-after");
+        //takeScreenshot("angebotAnfordern-after");
         logger.info("Successfully clicked Angebot Anfordern button");
     }
 

@@ -62,10 +62,10 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
     public void enterDarlehenshoehe(String amount) {
         waitForElementToBeClickable(darlehenswunschInput);
         highlightElement(darlehenswunschInput);
-        takeScreenshot("before_entering_loan_amount");
+        //takeScreenshot("before_entering_loan_amount");
         darlehenswunschInput.clear();
         darlehenswunschInput.sendKeys(amount);
-        takeScreenshot("after_entering_loan_amount");
+        //takeScreenshot("after_entering_loan_amount");
         logger.info("Entered loan amount: {}", amount);
     }
 
@@ -76,24 +76,24 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
             .keyUp(Keys.COMMAND)
             .sendKeys(percentage)
             .perform();
-        takeScreenshot("after_entering_repayment");
+        //takeScreenshot("after_entering_repayment");
         logger.info("Entered repayment percentage: {}", percentage);
     }
 
     public void selectRueckzahlungsArt(String type) {
         wait.until(ExpectedConditions.elementToBeClickable(rueckzahlungsArtDropdown));
         highlightElement(rueckzahlungsArtDropdown);
-        takeScreenshot("rueckzahlungsArt-before");
+        //takeScreenshot("rueckzahlungsArt-before");
         Select select = new Select(rueckzahlungsArtDropdown);
         select.selectByVisibleText(type);
-        takeScreenshot("rueckzahlungsArt-after");
+        //takeScreenshot("rueckzahlungsArt-after");
         logger.info("Successfully selected repayment type: " + type);
     }
 
     public void enterAuszahlungsdatum() throws InterruptedException {
         wait.until(ExpectedConditions.elementToBeClickable(auszahlungsdatumInput));
         highlightElement(auszahlungsdatumInput);
-        takeScreenshot("auszahlungsdatum-before");
+        //takeScreenshot("auszahlungsdatum-before");
         auszahlungsdatumInput.clear();
 
         LocalDate tomorrow = LocalDate.now().plusDays(1);
@@ -104,7 +104,7 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
         auszahlungsdatumInput.sendKeys(formattedDate,Keys.ENTER);
 
         Thread.sleep(2000);    
-        takeScreenshot("auszahlungsdatum-after");
+        //takeScreenshot("auszahlungsdatum-after");
         logger.info("Successfully entered payout date: " + formattedDate);
     }
 
@@ -126,7 +126,7 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
             
             // Highlight for debugging
             highlightElement(weiterButton);
-            takeScreenshot("before-clicking-weiter");
+            //takeScreenshot("before-clicking-weiter");
             
             // Try different click methods
             try {
@@ -147,7 +147,7 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
             
         } catch (Exception e) {
             logger.error("Failed to click Weiter button: {}", e.getMessage());
-            takeScreenshot("weiter-button-error");
+            //takeScreenshot("weiter-button-error");
             throw e;
         }
     }
@@ -155,10 +155,10 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
     public void enterMonthlyPayment(String amount) {
         wait.until(ExpectedConditions.elementToBeClickable(monthlyPaymentInput));
         highlightElement(monthlyPaymentInput);
-        takeScreenshot("before-entering-monthly-payment");
+        //takeScreenshot("before-entering-monthly-payment");
         monthlyPaymentInput.clear();
         monthlyPaymentInput.sendKeys(amount);
-        takeScreenshot("after-entering-monthly-payment");
+        //takeScreenshot("after-entering-monthly-payment");
         logger.info("Entered monthly payment: {}", amount);
     }
 
@@ -168,20 +168,20 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
     public void enterTotalTermYears(String years) {
         wait.until(ExpectedConditions.elementToBeClickable(totalTermYearsInput));
         highlightElement(totalTermYearsInput);
-        takeScreenshot("before-entering-term-years");
+        //takeScreenshot("before-entering-term-years");
         totalTermYearsInput.clear();
         totalTermYearsInput.sendKeys(years);
-        takeScreenshot("after-entering-term-years");
+        //takeScreenshot("after-entering-term-years");
         logger.info("Entered total term years: {}", years);
     }
 
     public void enterTotalTermMonths(String months) {
         wait.until(ExpectedConditions.elementToBeClickable(totalTermMonthsInput));
         highlightElement(totalTermMonthsInput);
-        takeScreenshot("before-entering-term-months");
+        //takeScreenshot("before-entering-term-months");
         totalTermMonthsInput.clear();
         totalTermMonthsInput.sendKeys(months);
-        takeScreenshot("after-entering-term-months");
+        //takeScreenshot("after-entering-term-months");
         logger.info("Entered total term months: {}", months);
     }
 

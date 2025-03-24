@@ -6,6 +6,8 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import com.test.utilities.Driver;
+import com.test.utilities.TestDataGenerator;
+
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +60,9 @@ public class OfferSelectionPage extends BasePage {
 
     @FindBy(css = "#sollzinsbindungen-weiter-button")
     private WebElement angebotAnfordernButton;
+
+    TestDataGenerator testDataGenerator = new TestDataGenerator();
+    String fakeOptionNumber = testDataGenerator.generateOptionNumber();
 
     /**
      * Öffnet den Modal-Dialog durch Klicken auf den Info-Button
@@ -142,31 +147,30 @@ public class OfferSelectionPage extends BasePage {
     }
 
     public void selectAnAvailableOption() throws Exception {
+        logger.info("Selecting option number: {}", fakeOptionNumber);
         try {
-            // Wait for the offer cards to be visible first
-            wait.until(ExpectedConditions.visibilityOfAllElements(offerCards));
-            logger.info("Offer cards are visible");
-
-            wait.until(ExpectedConditions.visibilityOfAllElements(secondOption));
-            logger.info("Second option is visible");
-
-            highlightElement(secondOption);
-            secondOption.click();
-
-
+            String xpath = "//*[@id='anfrage" + (Integer.parseInt(fakeOptionNumber) - 1) + "']";
+            WebElement option = Driver.getDriver().findElement(By.xpath(xpath));
+            wait.until(ExpectedConditions.elementToBeClickable(option));
+            highlightElement(option);
+            //takeScreenshot("before-selecting-option-" + optionNumber);
+            option.click();
+            //takeScreenshot("after-selecting-option-" + optionNumber);
+            logger.info("Successfully selected option {}", fakeOptionNumber);
         } catch (Exception e) {
-            logger.error("Failed to select first available option: " + e.getMessage());
+            logger.error("Failed to select option {}: {}", fakeOptionNumber, e.getMessage());
             throw e;
         }
+    
     }
 
     public void clickAngebotAnfordern() {
         try {
             wait.until(ExpectedConditions.elementToBeClickable(angebotAnfordernButton));
             highlightElement(angebotAnfordernButton);
-            takeScreenshot("angebotAnfordern-before");
+            //takeScreenshot("angebotAnfordern-before");
             angebotAnfordernButton.click();
-            takeScreenshot("angebotAnfordern-after");
+            //takeScreenshot("angebotAnfordern-after");
             logger.info("Successfully clicked Angebot Anfordern button");
         } catch (Exception e) {
             logger.error("Failed to click Angebot Anfordern button: " + e.getMessage());
@@ -181,9 +185,9 @@ public class OfferSelectionPage extends BasePage {
             WebElement option = Driver.getDriver().findElement(By.xpath(xpath));
             wait.until(ExpectedConditions.elementToBeClickable(option));
             highlightElement(option);
-            takeScreenshot("before-selecting-option-" + optionNumber);
+            //takeScreenshot("before-selecting-option-" + optionNumber);
             option.click();
-            takeScreenshot("after-selecting-option-" + optionNumber);
+            //takeScreenshot("after-selecting-option-" + optionNumber);
             logger.info("Successfully selected option {}", optionNumber);
         } catch (Exception e) {
             logger.error("Failed to select option {}: {}", optionNumber, e.getMessage());

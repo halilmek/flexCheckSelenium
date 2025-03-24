@@ -3,6 +3,8 @@ package com.test.stepdefinitions;
 import com.test.pages.*;
 import com.test.utilities.ConfigurationReader;
 import com.test.utilities.Driver;
+import com.test.utilities.TestDataGenerator;
+
 import io.cucumber.java.en.*;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
@@ -26,12 +28,15 @@ public class KreditberechnungSteps {
     private final DokumentHochladenPage dokumentHochladenPage = new DokumentHochladenPage();
     private final FinalPage finalPage = new FinalPage();
 
+    TestDataGenerator testDataGenerator = new TestDataGenerator();
+    String postalCode = testDataGenerator.generatePostalCode();
+    String purchasePrice = testDataGenerator.generatePurchasePrice();
+    String loanAmount = testDataGenerator.generateLoanAmount(purchasePrice);
+    String repaymentPercentage = testDataGenerator.generateRepaymentPercentage();
+    String monthlyPayment = testDataGenerator.generateMonthlyPayment();
     @Given("the user is on the FlexCheck calculator page")
     public void the_user_is_on_the_flex_check_calculator_page() {
-        Driver.getDriver().get(ConfigurationReader.getProperty("url"));
-        Driver.getDriver().manage().window().maximize();
-        Driver.getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        logger.info("Navigated to FlexCheck calculator page");
+        angabenZumObjektPage.navigatingToHomePage();
     }
 
     //=====================Angaben zum Objekt Page=====================
@@ -42,11 +47,13 @@ public class KreditberechnungSteps {
 
     @When("the user enters postal code {string}")
     public void theUserEntersPostalCode(String plz) {
+        plz = postalCode;
         angabenZumObjektPage.enterPlz(plz);
     }
 
     @When("the user enters purchase price {string}")
     public void theUserEntersPurchasePrice(String price) {
+        price = purchasePrice;
         angabenZumObjektPage.enterKaufpreis(price);
     }
 
@@ -64,11 +71,13 @@ public class KreditberechnungSteps {
 
     @When("the user enters desired loan amount {string}")
     public void theUserEntersDesiredLoanAmount(String amount) {
+        amount = loanAmount;
         finanzierungPage.enterDarlehenshoehe(amount);
     }
 
     @When("the user enters repayment percentage {string}")
-    public void theUserEntersRepaymentPercentage(String percentage) throws InterruptedException{
+    public void theUserEntersRepaymentPercentage(String percentage) throws InterruptedException {
+        percentage = repaymentPercentage;
         finanzierungPage.enterTilgung(percentage);
     }
 
@@ -90,6 +99,7 @@ public class KreditberechnungSteps {
     //Montly Payment
     @When("the user enters monthly payment {string}")
     public void theUserEntersMonthlyPayment(String amount) {
+        amount = monthlyPayment;
         logger.info("Entering monthly payment amount: {}", amount);
         try {
             finanzierungPage.enterMonthlyPayment(amount);
@@ -168,6 +178,12 @@ public class KreditberechnungSteps {
         dokumentHochladenPage.clickingWeiterButtonInDokumentHochladungPage();
     }
 
+    //File Upload Negative Test
+    @When("the user uploads a file not correctly")
+    public void theUserUploadsAFileNotCorrectly() {
+        dokumentHochladenPage.uploadIdForNegativeTest();
+    }
+
 //============Final Page============
 
     @When("the user writes a message")
@@ -184,5 +200,10 @@ public class KreditberechnungSteps {
     @Then("the user should see the success message")
     public void theUserShouldSeeTheSuccessMessage() throws Exception {
         finalPage.isSuccessMessageDisplayed();
+    }
+
+    @Then("the user should see the error message for file upload")
+    public void theUserShouldSeeTheErrorMessageForFileUpload() {
+        finalPage.notSuccessMessageDisplayedForFileUpload();
     }
 } 

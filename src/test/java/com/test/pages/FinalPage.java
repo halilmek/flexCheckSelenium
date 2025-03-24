@@ -42,19 +42,19 @@ public class FinalPage extends BasePage {
         String message = "This is a test message for the financing request.";
         waitForElementToBeClickable(messageTextArea);
         highlightElement(messageTextArea);
-        takeScreenshot("before_writing_message");
+        //takeScreenshot("before_writing_message");
         messageTextArea.clear();
         messageTextArea.sendKeys(message);
-        takeScreenshot("after_writing_message");
+        //takeScreenshot("after_writing_message");
         logger.info("Wrote message: {}", message);
     }
 
     public void clickSubmitButton() {
         waitForElementToBeClickable(submitButton);
         highlightElement(submitButton);
-        takeScreenshot("before_clicking_submit");
+        //takeScreenshot("before_clicking_submit");
         submitButton.click();
-        takeScreenshot("after_clicking_submit");
+        //takeScreenshot("after_clicking_submit");
         logger.info("Clicked submit button");
     }
 
@@ -106,5 +106,33 @@ public class FinalPage extends BasePage {
             System.out.println("❌ Warning: Success messages not found: " + e.getMessage());
         }
         return false;
+    }
+
+    public boolean notSuccessMessageDisplayedForFileUpload() {
+        JavascriptExecutor js1 = (JavascriptExecutor) Driver.getDriver();
+      
+        boolean messageFound = false;
+        int maxRetries = 10; // 10 kez deneyecek (toplam 5 saniye)
+        int retry = 0;
+ 
+ 
+        while (!messageFound && retry < maxRetries) {
+            String bodyText = (String) js1.executeScript("return document.body.innerText;");
+            if (bodyText.contains("konnte nicht hochgeladen werden")) {
+                System.out.println("Başarı mesajı bulundu!");
+                System.out.println(bodyText);
+                messageFound = true;
+            } else {
+                System.out.println("Mesaj bekleniyor...");
+            }
+           
+            try {
+                Thread.sleep(500); // 500ms bekle
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            retry++;
+        } 
+        return messageFound;
     }
 }
