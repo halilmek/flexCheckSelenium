@@ -9,13 +9,19 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class BrowserUtil {
+    private static final Logger logger = LoggerFactory.getLogger(BrowserUtil.class);
+    private static final Map<String, String> storedValues = new HashMap<>();
     
 
     public BrowserUtil() {
@@ -185,10 +191,111 @@ public class BrowserUtil {
         for (WebElement button : buttons) {
             if (button.getText().trim().equalsIgnoreCase("weiter")) {
                 new Actions(Driver.getDriver()).sendKeys(Keys.SPACE).perform();
-                System.out.println("‘Angebot anfordern’ butonuna tıklandı.");
+                System.out.println("'Angebot anfordern' butonuna tıklandı.");
                 return;
             }
         }
-        System.out.println("‘Angebot anfordern’ butonu bulunamadı!");
+        System.out.println("'Angebot anfordern' butonu bulunamadı!");
+    }
+
+    // Store input and displayed values
+    private static Map<String, String> inputValues = new HashMap<>();
+    private static Map<String, String> displayedValues = new HashMap<>();
+
+    /**
+     * Stores the input value with its key
+     * @param key identifier for the value (e.g., "purchasePrice", "loanAmount")
+     * @param value the value entered by user
+     */
+    public static void storeInputValue(String key, String value) {
+        inputValues.put(key, cleanValue(value));
+        logger.info("Stored input value for {}: {}", key, value);
+    }
+
+    /**
+     * Stores the displayed value with its key
+     * @param key identifier for the value
+     * @param value the value displayed in UI
+     */
+    public static void storeDisplayedValue(String key, String value) {
+        displayedValues.put(key, cleanValue(value));
+        logger.info("Stored displayed value for {}: {}", key, value);
+    }
+
+    /**
+     * Compares stored input value with displayed value
+     * @param key identifier for the value to compare
+     * @return true if values match, false otherwise
+     */
+    public static boolean compareValues(String key) {
+        String input = inputValues.get(key);
+        String displayed = displayedValues.get(key);
+        
+        if (input == null || displayed == null) {
+            logger.warn("Missing value for comparison. Key: {}, Input: {}, Displayed: {}", 
+                       key, input, displayed);
+            return false;
+        }
+
+        boolean matches = input.equals(displayed);
+        if (!matches) {
+            logger.warn("Values don't match for {}. Input: {}, Displayed: {}", 
+                       key, input, displayed);
+        }
+        return matches;
+    }
+
+    /**
+     * Gets all stored input values
+     * @return Map of input values
+     */
+    public static Map<String, String> getInputValues() {
+        return new HashMap<>(inputValues);
+    }
+
+    /**
+     * Gets all stored displayed values
+     * @return Map of displayed values
+     */
+    public static Map<String, String> getDisplayedValues() {
+        return new HashMap<>(displayedValues);
+    }
+
+    /**
+     * Cleans up stored values
+     */
+    public static void clearStoredValues() {
+        inputValues.clear();
+        displayedValues.clear();
+        logger.info("Cleared all stored values");
+    }
+
+    /**
+     * Cleans numeric values by removing currency symbols and formatting
+     * @param value the value to clean
+     * @return cleaned value
+     */
+    public static String cleanValue(String value) {
+        if (value == null) return null;
+        // Remove currency symbol, dots, spaces and other formatting
+        // Keep only numbers, decimal point and minus sign
+        return value.replaceAll("[^0-9,.-]", "")
+                   .replace(",", ".");
+    }
+
+    /**
+     * Verifies if all required values match between input and display
+     * @param keysToVerify list of keys to verify
+     * @return true if all values match, false otherwise
+     */
+    public static boolean verifyAllValues(List<String> keysToVerify) {
+        boolean allMatch = true;
+        for (String key : keysToVerify) {
+            if (!compareValues(key)) {
+                allMatch = false;
+                logger.error("Mismatch found for key: {}", key);
+            }
+        }
+        return allMatch;
     }
 } 

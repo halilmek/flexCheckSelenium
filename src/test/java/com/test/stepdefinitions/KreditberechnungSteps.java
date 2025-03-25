@@ -9,6 +9,7 @@ import io.cucumber.java.en.*;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -17,6 +18,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.Duration;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class KreditberechnungSteps {
     private static final Logger logger = LoggerFactory.getLogger(KreditberechnungSteps.class);
@@ -28,12 +33,15 @@ public class KreditberechnungSteps {
     private final DokumentHochladenPage dokumentHochladenPage = new DokumentHochladenPage();
     private final FinalPage finalPage = new FinalPage();
 
-    TestDataGenerator testDataGenerator = new TestDataGenerator();
-    String postalCode = testDataGenerator.generatePostalCode();
-    String purchasePrice = testDataGenerator.generatePurchasePrice();
-    String loanAmount = testDataGenerator.generateLoanAmount(purchasePrice);
-    String repaymentPercentage = testDataGenerator.generateRepaymentPercentage();
-    String monthlyPayment = testDataGenerator.generateMonthlyPayment();
+    String postalCode = TestDataGenerator.generatePostalCode();
+    String purchasePrice = TestDataGenerator.generatePurchasePrice();
+    String loanAmount = TestDataGenerator.generateLoanAmount(purchasePrice);
+    String repaymentPercentage = TestDataGenerator.generateRepaymentPercentage();
+    String monthlyPayment = TestDataGenerator.generateMonthlyPayment();
+    String randomPurpose = angabenZumObjektPage.getVerwendungszweck();
+    String randomPropertyType = angabenZumObjektPage.getObjektart();
+
+
     @Given("the user is on the FlexCheck calculator page")
     public void the_user_is_on_the_flex_check_calculator_page() {
         angabenZumObjektPage.navigatingToHomePage();
@@ -42,6 +50,7 @@ public class KreditberechnungSteps {
     //=====================Angaben zum Objekt Page=====================
     @When("the user selects {string} as usage purpose")
     public void theUserSelectsAsUsagePurpose(String purpose) {
+        purpose = randomPurpose;
         angabenZumObjektPage.selectVerwendungszweck(purpose);
     }
 
@@ -59,6 +68,7 @@ public class KreditberechnungSteps {
 
     @When("the user selects {string} as property type")
     public void theUserSelectsAsPropertyType(String type) {
+        type = randomPropertyType;
         angabenZumObjektPage.selectObjektart(type);
     }
 
@@ -158,6 +168,46 @@ public class KreditberechnungSteps {
     @When("the user selects {string} option")
     public void theUserSelectsOption(String optionNumber) {
         offerSelectionPage.selectOption(optionNumber);
+    }
+
+
+    //Entered values check
+    @When("the user clicks on Details anzeigen button")
+    public void theUserClicksOnDetailsAnzeigenButton() {
+        // Click the details button
+        offerSelectionPage.clickDetailsButton();
+        
+        // Print all values from the modal
+        offerSelectionPage.printModalValues();
+    }
+
+    @Then("the user should see values, as the user entered in the calculator")
+    public void verifyCalculatorValues() {
+        // Log stored values for debugging
+        repaymentPercentage = repaymentPercentage + ",00 %";
+        logger.info("Stored values:");
+        logger.info("Purchase price: {}", purchasePrice);
+        logger.info("Loan amount: {}", loanAmount);
+        logger.info("Purpose: {}", randomPurpose);
+        logger.info("Repayment percentage: {}", repaymentPercentage);
+
+        // Create map of expected values
+        Map<String, String> expectedValues = new HashMap<>();
+        expectedValues.put("Kaufpreis*:", purchasePrice);
+        expectedValues.put("Nettodarlehensbetrag:", loanAmount);
+        expectedValues.put("Verwendungszweck:", randomPurpose);
+        expectedValues.put("Tilgung p.a.:", repaymentPercentage);
+
+        // Verify values across all info buttons
+        boolean allValuesMatch = offerSelectionPage.verifyAllDetailsValues(expectedValues);
+
+        logger.info("All values matched: {}", allValuesMatch);
+        //new Actions(Driver.getDriver()).pause(Duration.ofSeconds(10)).perform();
+        new Actions(Driver.getDriver()).sendKeys(Keys.ESCAPE).perform();
+        
+        if (!allValuesMatch) {
+            throw new AssertionError("Not all values matched across info buttons. Check logs for details.");
+        }
     }
 
     //================DokumentHochladenPage=========

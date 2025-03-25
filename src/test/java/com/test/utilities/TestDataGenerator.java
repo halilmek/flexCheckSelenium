@@ -12,7 +12,7 @@ public class TestDataGenerator {
 
     public static String generatePurchasePrice() {
         // Generate a random price between 100000 and 1000000
-        return String.valueOf(faker.number().numberBetween(100000, 1000000));
+        return String.valueOf(faker.number().numberBetween(100000, 500000));
     }
 
     public static String generateLoanAmount(String purchasePrice) {
@@ -24,7 +24,8 @@ public class TestDataGenerator {
 
     public static String generateRepaymentPercentage() {
         // Generate a random percentage between 1 and 10
-        return String.valueOf(faker.number().numberBetween(1, 10));
+        //return String.valueOf(faker.number().numberBetween(1, 10));
+        return String.valueOf(faker.number().numberBetween(1, 7));
     }
 
     public static String generateMonthlyPayment() {

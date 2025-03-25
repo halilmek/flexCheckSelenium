@@ -1,5 +1,11 @@
 package com.test.pages;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -45,6 +51,52 @@ public class AngabenZumObjektPage extends BasePage {
         logger.info("Navigated to FlexCheck calculator page");
     }
     
+    public String getVerwendungszweck() {
+
+        // Tekrar içermeyen elemanları saklayan Set
+        Set<String> uniqueSet = new LinkedHashSet<String>();
+
+        // Eleman ekleme
+        uniqueSet.add("Kauf und Modernisierung");
+        uniqueSet.add("Kauf");
+        uniqueSet.add("Kauf Neubau");
+        uniqueSet.add("Kauf und Erweiterung");
+        uniqueSet.add("Modernisierung");
+        uniqueSet.add("Neubau");
+        uniqueSet.add("Umschuldung");
+        uniqueSet.add("sonstige Verwendung");
+
+        // Set'i List'e çevir (rastgele seçim için)
+        List<String> uniqueList = new ArrayList<String>(uniqueSet);
+
+        // Rastgele eleman seç
+        Random random = new Random();
+        String randomElement = uniqueList.get(random.nextInt(uniqueList.size()));
+        return randomElement;   
+    }
+
+    public String getObjektart() {
+
+        // Tekrar içermeyen elemanları saklayan Set
+        Set<String> uniqueSet = new LinkedHashSet<String>();
+
+        // Eleman ekleme
+        uniqueSet.add("Einfamilienhaus");
+        uniqueSet.add("Reihenendhaus");
+        uniqueSet.add("Reihenmittelhaus");
+        uniqueSet.add("Doppelhaushälfte");
+        uniqueSet.add("Zweifamilienhaus");
+        uniqueSet.add("Baugrundstück");
+        uniqueSet.add("Eigentumswohnung");
+
+        // Set'i List'e çevir (rastgele seçim için)
+        List<String> uniqueList = new ArrayList<String>(uniqueSet);
+
+        // Rastgele eleman seç
+        Random random = new Random();
+        String randomElement = uniqueList.get(random.nextInt(uniqueList.size()));
+        return randomElement;   
+    }
 
     /**
      * Selects the Verwendungszweck (Usage Purpose)
