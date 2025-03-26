@@ -5,15 +5,15 @@ Feature: FlexCheck Calculator Functionality
 
     Background:
         Given the user is on the FlexCheck calculator page
-    #@negative
+    #@wip
     Scenario: Checking upload success message in negative test
-        When the user selects "Kauf" as usage purpose
-        And the user enters postal code "string"
-        And the user enters purchase price "string"
-        And the user selects "Einfamilienhaus" as property type
+        When the user selects "randomPurpose" as usage purpose
+        And the user enters postal code "randomPostalCode"
+        And the user enters purchase price "randomPurchasePrice"
+        And the user selects "randomPropertyType" as property type
         And the user clicks on Weiter in Angaben zum Objekt page
-        And the user enters desired loan amount "string"
-        And the user enters repayment percentage "string"
+        And the user enters desired loan amount "randomLoanAmount"
+        And the user enters repayment percentage "randomRepaymentPercentage"
         And the user selects repayment type "Tilgung in %"
         And the user enters first payout date
         And the user clicks on Weiter in Angaben zum Finanzierungswunsch page

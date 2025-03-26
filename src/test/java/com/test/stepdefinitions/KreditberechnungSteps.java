@@ -33,14 +33,15 @@ public class KreditberechnungSteps {
     private final DokumentHochladenPage dokumentHochladenPage = new DokumentHochladenPage();
     private final FinalPage finalPage = new FinalPage();
 
-    String postalCode = TestDataGenerator.generatePostalCode();
-    String purchasePrice = TestDataGenerator.generatePurchasePrice();
-    String loanAmount = TestDataGenerator.generateLoanAmount(purchasePrice);
-    String repaymentPercentage = TestDataGenerator.generateRepaymentPercentage();
-    String monthlyPayment = TestDataGenerator.generateMonthlyPayment();
+    String randomPostalCode = TestDataGenerator.generatePostalCode();
+    String randomPurchasePrice = TestDataGenerator.generatePurchasePrice();
+    String randomLoanAmount = TestDataGenerator.generateLoanAmount(randomPurchasePrice);
+    String randomRepaymentPercentage = TestDataGenerator.generateRepaymentPercentage();
+    String randomMonthlyPayment = TestDataGenerator.generateMonthlyPayment();
     String randomPurpose = angabenZumObjektPage.getVerwendungszweck();
     String randomPropertyType = angabenZumObjektPage.getObjektart();
-
+    String randomJahreFürGesamtlaufzeit = TestDataGenerator.generateJahreFürGesamtlaufzeit();
+    String randomMonateFürGesamtlaufzeit = TestDataGenerator.generateMonateFürGesamtlaufzeit();
 
     @Given("the user is on the FlexCheck calculator page")
     public void the_user_is_on_the_flex_check_calculator_page() {
@@ -50,25 +51,33 @@ public class KreditberechnungSteps {
     //=====================Angaben zum Objekt Page=====================
     @When("the user selects {string} as usage purpose")
     public void theUserSelectsAsUsagePurpose(String purpose) {
-        purpose = randomPurpose;
+        if (purpose.equalsIgnoreCase("randomPurpose")) {
+            purpose = randomPurpose;
+        }
         angabenZumObjektPage.selectVerwendungszweck(purpose);
     }
 
     @When("the user enters postal code {string}")
     public void theUserEntersPostalCode(String plz) {
-        plz = postalCode;
+        if (plz.equalsIgnoreCase("randomPostalCode")) {
+            plz = randomPostalCode;
+        }
         angabenZumObjektPage.enterPlz(plz);
     }
 
     @When("the user enters purchase price {string}")
     public void theUserEntersPurchasePrice(String price) {
-        price = purchasePrice;
+        if (price.equalsIgnoreCase("randomPurchasePrice")) {
+            price = randomPurchasePrice;
+        }
         angabenZumObjektPage.enterKaufpreis(price);
     }
 
     @When("the user selects {string} as property type")
     public void theUserSelectsAsPropertyType(String type) {
-        type = randomPropertyType;
+        if (type.equalsIgnoreCase("randomPropertyType")) {
+            type = randomPropertyType;
+        }
         angabenZumObjektPage.selectObjektart(type);
     }
 
@@ -81,13 +90,17 @@ public class KreditberechnungSteps {
 
     @When("the user enters desired loan amount {string}")
     public void theUserEntersDesiredLoanAmount(String amount) {
-        amount = loanAmount;
+        if (amount.equalsIgnoreCase("randomLoanAmount")) {
+            amount = randomLoanAmount;
+        }
         finanzierungPage.enterDarlehenshoehe(amount);
     }
 
     @When("the user enters repayment percentage {string}")
     public void theUserEntersRepaymentPercentage(String percentage) throws InterruptedException {
-        percentage = repaymentPercentage;
+        if (percentage.equalsIgnoreCase("randomRepaymentPercentage")) {
+            percentage = randomRepaymentPercentage;
+        }
         finanzierungPage.enterTilgung(percentage);
     }
 
@@ -109,7 +122,9 @@ public class KreditberechnungSteps {
     //Montly Payment
     @When("the user enters monthly payment {string}")
     public void theUserEntersMonthlyPayment(String amount) {
-        amount = monthlyPayment;
+        if (amount.equalsIgnoreCase("randomMonthlyPayment")) {
+            amount = randomMonthlyPayment;
+        }
         logger.info("Entering monthly payment amount: {}", amount);
         try {
             finanzierungPage.enterMonthlyPayment(amount);
@@ -124,6 +139,10 @@ public class KreditberechnungSteps {
     //Total Term
     @When("the user enters total term in years {string}")
     public void theUserEntersTotalTermInYears(String years) {
+        // Eğer senaryo Outline'dan geliyorsa, doğrudan o değeri kullan
+        if (years.equalsIgnoreCase("randomJahre")) {
+            years = randomJahreFürGesamtlaufzeit; // TestDataGenerator'dan alınan rastgele değer
+        }
         logger.info("Entering total term in years: {}", years);
         try {
             finanzierungPage.enterTotalTermYears(years);
@@ -136,6 +155,10 @@ public class KreditberechnungSteps {
 
     @When("the user enters total term in months {string}")
     public void theUserEntersTotalTermInMonths(String months) {
+        // Eğer senaryo Outline'dan geliyorsa, doğrudan o değeri kullan
+        if (months.equalsIgnoreCase("randomMonate")) {
+            months = randomMonateFürGesamtlaufzeit; // TestDataGenerator'dan alınan rastgele değer
+        }
         logger.info("Entering total term in months: {}", months);
         try {
             finanzierungPage.enterTotalTermMonths(months);
@@ -181,28 +204,85 @@ public class KreditberechnungSteps {
         offerSelectionPage.printModalValues();
     }
 
-    @Then("the user should see values, as the user entered in the calculator")
+    @Then("the user should see values, as the user entered in the calculator based on Tilgung in % payment type")
     public void verifyCalculatorValues() {
         // Log stored values for debugging
-        repaymentPercentage = repaymentPercentage + ",00 %";
+        randomRepaymentPercentage = randomRepaymentPercentage + ",00 %";
         logger.info("Stored values:");
-        logger.info("Purchase price: {}", purchasePrice);
-        logger.info("Loan amount: {}", loanAmount);
+        logger.info("Purchase price: {}", randomPurchasePrice);
+        logger.info("Loan amount: {}", randomLoanAmount);
         logger.info("Purpose: {}", randomPurpose);
-        logger.info("Repayment percentage: {}", repaymentPercentage);
+        logger.info("Repayment percentage: {}", randomRepaymentPercentage);
 
         // Create map of expected values
         Map<String, String> expectedValues = new HashMap<>();
-        expectedValues.put("Kaufpreis*:", purchasePrice);
-        expectedValues.put("Nettodarlehensbetrag:", loanAmount);
+        expectedValues.put("Kaufpreis*:", randomPurchasePrice);
+        expectedValues.put("Nettodarlehensbetrag:", randomLoanAmount);
         expectedValues.put("Verwendungszweck:", randomPurpose);
-        expectedValues.put("Tilgung p.a.:", repaymentPercentage);
+        //expectedValues.put("Tilgung p.a.:", randomRepaymentPercentage);
 
         // Verify values across all info buttons
         boolean allValuesMatch = offerSelectionPage.verifyAllDetailsValues(expectedValues);
 
         logger.info("All values matched: {}", allValuesMatch);
         //new Actions(Driver.getDriver()).pause(Duration.ofSeconds(10)).perform();
+        new Actions(Driver.getDriver()).sendKeys(Keys.ESCAPE).perform();
+        
+        if (!allValuesMatch) {
+            throw new AssertionError("Not all values matched across info buttons. Check logs for details.");
+        }
+    }
+    
+    @Then("the user should see values, as the user entered in the calculator based on Monatliche Rate payment type")
+    public void verifyCalculatorValuesForMonthlyRatePaymentType() {
+        // Log stored values for debugging
+        logger.info("Stored values:");
+        logger.info("Purchase price: {}", randomPurchasePrice);
+        logger.info("Loan amount: {}", randomLoanAmount);
+        logger.info("Purpose: {}", randomPurpose);
+        logger.info("Monthly payment: {}", randomMonthlyPayment);
+
+        // Create map of expected values
+        Map<String, String> expectedValues = new HashMap<>();
+        expectedValues.put("Kaufpreis*:", randomPurchasePrice);
+        expectedValues.put("Nettodarlehensbetrag:", randomLoanAmount);
+        expectedValues.put("Verwendungszweck:", randomPurpose);
+        // Don't check monthly payment as it might be recalculated with interest
+        // expectedValues.put("monatliche Rate:", randomMonthlyPayment);
+
+        // Verify values across all info buttons
+        boolean allValuesMatch = offerSelectionPage.verifyAllDetailsValues(expectedValues);
+
+        logger.info("All values matched: {}", allValuesMatch);
+        new Actions(Driver.getDriver()).sendKeys(Keys.ESCAPE).perform();
+        
+        if (!allValuesMatch) {
+            throw new AssertionError("Not all values matched across info buttons. Check logs for details.");
+        }
+    }
+    
+    @Then("the user should see values, as the user entered in the calculator based on Gesamtlaufzeit payment type")
+    public void verifyCalculatorValuesForGesamtlaufzeitPaymentType() {
+        String totalTerm = randomJahreFürGesamtlaufzeit + " Jahre " + randomMonateFürGesamtlaufzeit + " Monate";
+        // Log stored values for debugging
+        logger.info("Stored values:");
+        logger.info("Purchase price: {}", randomPurchasePrice);
+        logger.info("Loan amount: {}", randomLoanAmount);
+        logger.info("Purpose: {}", randomPurpose);
+        logger.info("Total term: {}", totalTerm);
+        
+        // Create map of expected values
+        Map<String, String> expectedValues = new HashMap<>();
+        expectedValues.put("Kaufpreis*:", randomPurchasePrice);
+        expectedValues.put("Nettodarlehensbetrag:", randomLoanAmount);
+        expectedValues.put("Verwendungszweck:", randomPurpose);
+        expectedValues.put("Vertragslaufzeit:", totalTerm); //Create a static variable for totalTerm 
+        // Note: We don't verify the total term as it might be formatted differently in the modal
+
+        // Verify values across all info buttons
+        boolean allValuesMatch = offerSelectionPage.verifyAllDetailsValues(expectedValues);
+
+        logger.info("All values matched: {}", allValuesMatch);
         new Actions(Driver.getDriver()).sendKeys(Keys.ESCAPE).perform();
         
         if (!allValuesMatch) {

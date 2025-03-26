@@ -37,4 +37,14 @@ public class TestDataGenerator {
         // Generate a random percentage between 1 and 10
         return String.valueOf(faker.number().numberBetween(1, 4));
     }
+
+    public static String generateJahreFürGesamtlaufzeit() {
+        // Generate a random percentage between 1 and 10
+        return String.valueOf(faker.number().numberBetween(6, 30));
+    }
+
+    public static String generateMonateFürGesamtlaufzeit() {
+        // Generate a random percentage between 1 and 10
+        return String.valueOf(faker.number().numberBetween(1, 12));
+    }
 }

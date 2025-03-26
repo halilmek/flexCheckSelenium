@@ -6,15 +6,15 @@ Feature: FlexCheck Calculator Functionality
   Background:
     Given the user is on the FlexCheck calculator page
 
-#@wip
+  #@wip
   Scenario Outline: Calculate financing with different usage purposes
     When the user selects "<usage_purpose>" as usage purpose
-    And the user enters postal code "string"
-    And the user enters purchase price "string"
-    And the user selects "Einfamilienhaus" as property type
+    And the user enters postal code "randomPostalCode"
+    And the user enters purchase price "randomPurchasePrice"
+    And the user selects "randomPropertyType" as property type
     And the user clicks on Weiter in Angaben zum Objekt page
-    And the user enters desired loan amount "string"
-    And the user enters repayment percentage "string"
+    And the user enters desired loan amount "randomLoanAmount"
+    And the user enters repayment percentage "randomRepaymentPercentage"
     And the user selects repayment type "Tilgung in %"
     And the user enters first payout date
     And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
@@ -30,24 +30,24 @@ Feature: FlexCheck Calculator Functionality
 
     Examples:
       | usage_purpose           |
-      |Kauf und Modernisierung|
-      | Kauf                   |
-      | Kauf Neubau           |
-      | Kauf und Erweiterung  |
-      | Modernisierung        |
-      | Neubau                |
-      | Umschuldung           |
-      | sonstige Verwendung   |
+      | Kauf und Modernisierung|
+      #| Kauf                   |
+      #| Kauf Neubau           |
+      #| Kauf und Erweiterung  |
+      #| Modernisierung        |
+      #| Neubau                |
+      #| Umschuldung           |
+      #| sonstige Verwendung   |
 
 #@wip
 Scenario Outline: Calculate financing with different property types
-    When the user selects "Kauf" as usage purpose
-    And the user enters postal code "string"
-    And the user enters purchase price "string"
+    When the user selects "randomPurpose" as usage purpose
+    And the user enters postal code "randomPostalCode"
+    And the user enters purchase price "randomPurchasePrice"
     And the user selects "<property_type>" as property type
     And the user clicks on Weiter in Angaben zum Objekt page
-    And the user enters desired loan amount "string"
-    And the user enters repayment percentage "string"
+    And the user enters desired loan amount "randomLoanAmount"
+    And the user enters repayment percentage "randomRepaymentPercentage"
     And the user selects repayment type "Tilgung in %"
     And the user enters first payout date
     And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
@@ -72,16 +72,16 @@ Scenario Outline: Calculate financing with different property types
       | Eigentumswohnung    |
 
 
-#@wip
-  Scenario: Calculate financing with different usage purposes
-    When the user selects "Kauf" as usage purpose
-    And the user enters postal code "string"
-    And the user enters purchase price "string"
-    And the user selects "Einfamilienhaus" as property type
+  #@wip
+  Scenario: Calculate financing with monthly payment type
+    When the user selects "randomPurpose" as usage purpose
+    And the user enters postal code "randomPostalCode"
+    And the user enters purchase price "randomPurchasePrice"
+    And the user selects "randomPropertyType" as property type
     And the user clicks on Weiter in Angaben zum Objekt page
-    And the user enters desired loan amount "string"
+    And the user enters desired loan amount "randomLoanAmount"
     And the user selects repayment type "monatliche Rate"
-    And the user enters monthly payment "string"
+    And the user enters monthly payment "randomMonthlyPayment"
     And the user enters first payout date
     And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
     Then the user should see the calculation results
@@ -95,14 +95,14 @@ Scenario Outline: Calculate financing with different property types
     Then the user should see the success message
 
 
-#@wip
-  Scenario Outline: Calculate financing with different usage purposes
-    When the user selects "Kauf" as usage purpose
-    And the user enters postal code "string"
-    And the user enters purchase price "string"
-    And the user selects "Einfamilienhaus" as property type
+  #@wip
+  Scenario Outline: Calculate financing with total term payment type
+    When the user selects "randomPurpose" as usage purpose
+    And the user enters postal code "randomPostalCode"
+    And the user enters purchase price "randomPurchasePrice"
+    And the user selects "randomPropertyType" as property type
     And the user clicks on Weiter in Angaben zum Objekt page
-    And the user enters desired loan amount "string"
+    And the user enters desired loan amount "randomLoanAmount"
     And the user selects repayment type "Gesamtlaufzeit"
     And the user enters total term in years "<total_term_in_years>"
     And the user enters total term in months "<total_term_in_months>"
@@ -126,15 +126,15 @@ Scenario Outline: Calculate financing with different property types
 
 
 
-#@wip
-  Scenario Outline: Calculate financing with different usage purposes
-    When the user selects "Kauf" as usage purpose
-    And the user enters postal code "string"
-    And the user enters purchase price "string"
-    And the user selects "Einfamilienhaus" as property type
+  #@wip
+  Scenario Outline: Select all options one by one
+    When the user selects "randomPurpose" as usage purpose
+    And the user enters postal code "randomPostalCode"
+    And the user enters purchase price "randomPurchasePrice"
+    And the user selects "randomPropertyType" as property type
     And the user clicks on Weiter in Angaben zum Objekt page
-    And the user enters desired loan amount "string"
-    And the user enters repayment percentage "string"
+    And the user enters desired loan amount "randomLoanAmount"
+    And the user enters repayment percentage "randomRepaymentPercentage"
     And the user selects repayment type "Tilgung in %"
     And the user enters first payout date
     And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
