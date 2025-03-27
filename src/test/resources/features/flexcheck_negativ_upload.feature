@@ -18,7 +18,7 @@ Feature: FlexCheck Calculator Functionality
         And the user enters first payout date
         And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
         Then the user should see the calculation results
-        And the user selects an option
+        And the user selects "randomOption" option
         And the user clicks on Angebote anfordern
         And the user uploads a file not correctly
         And the user clicks on Weiter in DokumentHochladung page

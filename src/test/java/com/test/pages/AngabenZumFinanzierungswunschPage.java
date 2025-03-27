@@ -185,5 +185,47 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
         logger.info("Entered total term months: {}", months);
     }
 
+    /**
+     * Gets the current value of the loan amount field
+     * @return String containing the loan amount
+     */
+    public String getDarlehensbetrag() {
+        try {
+            wait.until(ExpectedConditions.visibilityOf(darlehenswunschInput));
+            wait.until(ExpectedConditions.elementToBeClickable(darlehenswunschInput));
+            highlightElement(darlehenswunschInput);
+            return darlehenswunschInput.getAttribute("value");
+        } catch (Exception e) {
+            logger.error("Failed to get loan amount: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    /**
+     * Gets the current value of the repayment percentage field
+     * @return String containing the repayment percentage
+     */
+    public String getTilgung() {
+        WebElement element = Driver.getDriver().findElement(By.id("tilgung"));
+        return element.getAttribute("value");
+    }
+
+    /**
+     * Gets the expected first payout date (tomorrow's date)
+     * @return String containing the expected date in dd.MM.yyyy format
+     */
+    public String getExpectedAuszahlungsdatum() {
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        return tomorrow.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    }
+
+    /**
+     * Gets the current value of the first payout date field
+     * @return String containing the payout date
+     */
+    public String getAuszahlungsdatum() {
+        WebElement element = Driver.getDriver().findElement(By.id("auszahlungsdatum"));
+        return element.getAttribute("value");
+    }
 
 } 

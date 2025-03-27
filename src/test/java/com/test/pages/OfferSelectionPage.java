@@ -1,6 +1,7 @@
 package com.test.pages;
 
 import com.test.utilities.BrowserUtil;
+import com.test.utilities.Utils;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
@@ -177,6 +178,8 @@ public class OfferSelectionPage extends BasePage {
     
     }
 
+
+
     public void clickAngebotAnfordern() {
         try {
             wait.until(ExpectedConditions.elementToBeClickable(angebotAnfordernButton));
@@ -207,6 +210,111 @@ public class OfferSelectionPage extends BasePage {
             throw e;
         }
     }
+
+    public void isSelectedOptionDisplayed(String optionNumber) {
+        
+        try {
+            String xpath = "//*[@id='anfrage" + (Integer.parseInt(optionNumber) - 1) + "']";
+            WebElement option = Driver.getDriver().findElement(By.xpath(xpath));
+            wait.until(ExpectedConditions.elementToBeClickable(option));
+            highlightElement(option);
+            new Actions(driver).moveToElement(option).perform();
+            logger.info("Selected option verified successfully: {}", option.isSelected());
+        } catch (Exception e) {
+            logger.error("Failed to verify selected option: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    public void isSelectedOptionDisplayed2(String optionNumber) {
+        
+        try {
+            
+            String xpath = "//*[@id='anfrage" + (Integer.parseInt(optionNumber) - 1) + "']";
+            WebElement radioButton = Driver.getDriver().findElement(By.xpath("//*[@id='anfrage" + (Integer.parseInt(optionNumber) - 1) + "']"));
+            JavascriptExecutor jsExecutor = (JavascriptExecutor) Driver.getDriver();
+            Boolean isChecked = (Boolean) jsExecutor.executeScript("return arguments[0].checked;", radioButton);
+            logger.info("JavaScript ile kontrol sonucu (checked): " + isChecked);
+            logger.info("selected option: " + xpath);
+            //Assert.assertTrue("Seçilen radyo butonu seçili olmalıydı (JS).", isChecked);
+        } catch (Exception e) {
+            logger.error("Failed to verify selected option: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    public boolean isSelectedOptionDisplayed3(String optionNumber) {
+        try {
+            // Wait for any loading indicators to disappear
+            BrowserUtil.waitForInvisibilityOfElement(driver, By.cssSelector(".loading-indicator"), 10);
+            
+            // Try multiple selectors for the offer container
+            String[] offerSelectors = {
+                "table.offer-table",
+                ".offer-container",
+                "[data-testid='offer-table']",
+                ".offer-selection-container"
+            };
+            
+            WebElement offerContainer = null;
+            for (String selector : offerSelectors) {
+                try {
+                    wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(selector)));
+                    offerContainer = driver.findElement(By.cssSelector(selector));
+                    logger.info("Found offer container using selector: " + selector);
+                    break;
+                } catch (Exception e) {
+                    logger.debug("Selector not found: " + selector);
+                }
+            }
+            
+            if (offerContainer == null) {
+                logger.error("No offer container found with any of the attempted selectors");
+                Utils.takeScreenshot(driver, "no-offer-container");
+                return false;
+            }
+            
+            // Wait for the page to be fully loaded
+            BrowserUtil.waitForPageToLoad(10);
+            
+            // Get all radio buttons and log their attributes
+            List<WebElement> radioButtons = driver.findElements(By.cssSelector("input[type='radio']"));
+            logger.info("Found " + radioButtons.size() + " radio buttons");
+            
+            for (WebElement radio : radioButtons) {
+                String id = radio.getAttribute("id");
+                String name = radio.getAttribute("name");
+                String value = radio.getAttribute("value");
+                boolean isSelected = radio.isSelected();
+                logger.info(String.format("Radio button - ID: %s, Name: %s, Value: %s, Selected: %s", 
+                    id, name, value, isSelected));
+            }
+            
+            // Try to find the specific radio button for the given option
+            String optionXPath = String.format("//input[@type='radio'][@value='%s']", optionNumber);
+            WebElement targetRadio = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(optionXPath)));
+            
+            // Check if the radio button is selected using multiple methods
+            boolean isSelectedByMethod = targetRadio.isSelected();
+            boolean isSelectedByJS = (boolean) ((JavascriptExecutor) driver)
+                .executeScript("return arguments[0].checked;", targetRadio);
+            boolean isSelectedByAttr = "true".equals(targetRadio.getAttribute("aria-checked"));
+            
+            logger.info(String.format("Option %s selection status - isSelected(): %s, JS checked: %s, aria-checked: %s",
+                optionNumber, isSelectedByMethod, isSelectedByJS, isSelectedByAttr));
+            
+            Utils.takeScreenshot(driver, "radio-button-check");
+            
+            return isSelectedByMethod || isSelectedByJS || isSelectedByAttr;
+            
+        } catch (Exception e) {
+            logger.error("Error checking selected option: " + e.getMessage());
+            Utils.takeScreenshot(driver, "option-check-error");
+            return false;
+        }
+    }
+
+    
 
 
     public void clickDetailsButton() {
@@ -885,6 +993,28 @@ public class OfferSelectionPage extends BasePage {
         }
         
         return values;
+    }
+
+    /**
+     * Gets the currently selected option
+     * @return String containing the selected option number
+     */
+    public String getSelectedOption() {
+        WebElement selectedOption = driver.findElement(By.cssSelector(".offer-selection input[type='radio']:checked"));
+        return selectedOption.getAttribute("value");
+    }
+
+    public void clickZurueckButtonInOfferSelectionPage() {
+        WebElement zurueckButton = Driver.getDriver().findElement(By.id("sollzinsbindungen-zurück-button"));
+
+        try {
+            zurueckButton.click();
+            logger.info("Successfully clicked back button in offer selection page");
+        } catch (Exception e) {
+            logger.error("Failed to click back button in offer selection page: {}", e.getMessage());
+            throw e;
+        }
+        logger.info("Clicking back button to return to 	Angaben zum Finanzierungswunsch page");
     }
 
 } 

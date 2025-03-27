@@ -298,4 +298,19 @@ public class BrowserUtil {
         }
         return allMatch;
     }
+
+    public static void waitForInvisibilityOfElement(WebDriver driver, By locator, int timeoutSeconds) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutSeconds));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
+    }
+
+    public static void waitForPageToLoad(int timeoutSeconds) {
+        try {
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(timeoutSeconds));
+            wait.until(webDriver -> ((JavascriptExecutor) webDriver)
+                .executeScript("return document.readyState").equals("complete"));
+        } catch (Exception e) {
+            logger.error("Error waiting for page to load: " + e.getMessage());
+        }
+    }
 } 

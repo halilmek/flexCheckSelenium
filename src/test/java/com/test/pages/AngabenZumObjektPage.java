@@ -17,6 +17,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.openqa.selenium.By;
 
 /**
  * Page class representing the "Angaben zum Objekt" (Property Details) page
@@ -177,9 +178,32 @@ public class AngabenZumObjektPage extends BasePage {
         return kaufpreisInput.getAttribute("value");
     }
 
+    /**
+     * Gets the currently selected property type
+     * @return String containing the selected property type
+     */
     public String getSelectedObjektart() {
-        Select select = new Select(objektartDropdown);
+        WebElement element = Driver.getDriver().findElement(By.id("objektart"));
+        Select select = new Select(element);
         return select.getFirstSelectedOption().getText();
+    }
+
+    /**
+     * Gets the current value of the postal code field
+     * @return String containing the postal code
+     */
+    public String getPlz() {
+        WebElement element = Driver.getDriver().findElement(By.id("plz"));
+        return element.getAttribute("value");
+    }
+
+    /**
+     * Gets the current value of the purchase price field
+     * @return String containing the purchase price
+     */
+    public String getKaufpreis() {
+        WebElement element = Driver.getDriver().findElement(By.id("kaufpreis"));
+        return element.getAttribute("value");
     }
 
 

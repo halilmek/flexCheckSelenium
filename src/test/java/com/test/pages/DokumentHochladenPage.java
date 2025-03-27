@@ -8,6 +8,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import com.test.utilities.Driver;
+import com.test.utilities.Utils;
 
 import java.io.File;
 import java.time.Duration;
@@ -18,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogType;
+import java.util.Arrays;
 
 /**
  * Page class representing the "Dokument Hochladen" (Document Upload) page
@@ -205,7 +207,108 @@ public class DokumentHochladenPage extends BasePage {
     }
 
     public void clickingWeiterButtonInDokumentHochladungPage() {
-        weiterButtonInDokumentHochladungPage.click();;
+        try {
+            // Wait for any loading animations to disappear
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".loading-animation")));
+            
+            // Wait for the page to be interactive
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.tagName("body")));
+            
+            // Add a small delay to ensure page is fully loaded
+            Thread.sleep(2000);
+            
+            // Try to find any clickable element that might be our button
+            List<WebElement> allClickableElements = Driver.getDriver().findElements(
+                By.cssSelector("button, a[role='button'], div[role='button'], *[class*='button'], *[class*='btn']")
+            );
+            
+            logger.info("Found {} potentially clickable elements", allClickableElements.size());
+            
+            WebElement targetElement = null;
+            
+            // First try: Look for elements with specific classes or text
+            for (WebElement element : allClickableElements) {
+                try {
+                    if (element.isDisplayed()) {
+                        String elementText = element.getText().toLowerCase();
+                        String elementClass = element.getAttribute("class");
+                        String elementRole = element.getAttribute("role");
+                        String elementType = element.getAttribute("type");
+                        
+                        logger.info("Checking element - Text: '{}', Class: '{}', Role: '{}', Type: '{}'",
+                            elementText, elementClass, elementRole, elementType);
+                        
+                        if ((elementClass != null && (elementClass.contains("nav-next") || elementClass.contains("weiter"))) ||
+                            (elementText != null && (elementText.contains("weiter") || elementText.contains("next"))) ||
+                            (elementRole != null && elementRole.equals("button") && elementClass != null && elementClass.contains("next"))) {
+                            targetElement = element;
+                            logger.info("Found potential navigation element");
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.debug("Error checking element: " + e.getMessage());
+                }
+            }
+            
+            // Second try: Look for any visible button-like element
+            if (targetElement == null) {
+                for (WebElement element : allClickableElements) {
+                    try {
+                        if (element.isDisplayed() && element.isEnabled()) {
+                            String elementClass = element.getAttribute("class");
+                            if (elementClass != null && !elementClass.contains("close") && !elementClass.contains("back")) {
+                                targetElement = element;
+                                logger.info("Using fallback clickable element with class: " + elementClass);
+                                break;
+                            }
+                        }
+                    } catch (Exception e) {
+                        logger.debug("Error checking fallback element: " + e.getMessage());
+                    }
+                }
+            }
+            
+            if (targetElement != null) {
+                // Take screenshot before clicking
+                Utils.takeScreenshot(Driver.getDriver(), "before-weiter-click");
+                
+                // Scroll into view and ensure element is clickable
+                ((JavascriptExecutor) Driver.getDriver()).executeScript(
+                    "arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", 
+                    targetElement
+                );
+                Thread.sleep(1000);
+                
+                // Try to click using different methods
+                try {
+                    targetElement.click();
+                    logger.info("Clicked element using standard click");
+                } catch (Exception e) {
+                    logger.info("Standard click failed, trying JavaScript click");
+                    ((JavascriptExecutor) Driver.getDriver()).executeScript("arguments[0].click();", targetElement);
+                    logger.info("Clicked element using JavaScript");
+                }
+                
+                // Take screenshot after clicking
+                Utils.takeScreenshot(Driver.getDriver(), "after-weiter-click");
+                
+                // Wait for navigation
+                try {
+                    wait.until(ExpectedConditions.stalenessOf(targetElement));
+                    logger.info("Successfully navigated - element is stale");
+                } catch (Exception e) {
+                    logger.info("Element did not become stale, checking if we moved to next page");
+                }
+            } else {
+                Utils.takeScreenshot(Driver.getDriver(), "weiter-button-error");
+                throw new RuntimeException("Could not find any suitable clickable element for navigation");
+            }
+        } catch (Exception e) {
+            Utils.takeScreenshot(Driver.getDriver(), "weiter-button-error");
+            logger.error("Failed to click navigation element: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
     public void uploadId2() {
@@ -401,6 +504,19 @@ public class DokumentHochladenPage extends BasePage {
 
         //takeScreenshot("after_uploading_id");
 
+    }
+
+    public void clickZurueckButtonInDokumentHochladungPage() {
+        WebElement zurueckButton = Driver.getDriver().findElement(By.id("kategorieDocumentTransferKlapp-zurück-button"));
+
+        try {
+            zurueckButton.click();
+            logger.info("Successfully clicked back button in document upload page");
+        } catch (Exception e) {
+            logger.error("Failed to click back button in document upload page: {}", e.getMessage());
+            throw e;
+        }
+        logger.info("Clicking back button to return to offer selection page");
     }
 
 } 

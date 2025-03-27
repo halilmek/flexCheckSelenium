@@ -19,7 +19,7 @@ Feature: FlexCheck Calculator Functionality
     And the user enters first payout date
     And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
     Then the user should see the calculation results
-    And the user selects an option
+    And the user selects "randomOption" option
     And the user clicks on Angebote anfordern
     And the user uploads id
     Then the user checks, whether the file was uploaded
@@ -31,13 +31,13 @@ Feature: FlexCheck Calculator Functionality
     Examples:
       | usage_purpose           |
       | Kauf und Modernisierung|
-      #| Kauf                   |
-      #| Kauf Neubau           |
-      #| Kauf und Erweiterung  |
-      #| Modernisierung        |
-      #| Neubau                |
-      #| Umschuldung           |
-      #| sonstige Verwendung   |
+      | Kauf                   |
+      | Kauf Neubau           |
+      | Kauf und Erweiterung  |
+      | Modernisierung        |
+      | Neubau                |
+      | Umschuldung           |
+      | sonstige Verwendung   |
 
 #@wip
 Scenario Outline: Calculate financing with different property types
@@ -52,7 +52,7 @@ Scenario Outline: Calculate financing with different property types
     And the user enters first payout date
     And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
     Then the user should see the calculation results
-    And the user selects an option
+    And the user selects "randomOption" option
     And the user clicks on Angebote anfordern
     And the user uploads id
     Then the user checks, whether the file was uploaded
@@ -85,7 +85,7 @@ Scenario Outline: Calculate financing with different property types
     And the user enters first payout date
     And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
     Then the user should see the calculation results
-    And the user selects an option
+    And the user selects "randomOption" option
     And the user clicks on Angebote anfordern
     And the user uploads id
     Then the user checks, whether the file was uploaded
@@ -109,7 +109,7 @@ Scenario Outline: Calculate financing with different property types
     And the user enters first payout date
     And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
     Then the user should see the calculation results
-    And the user selects an option
+    And the user selects "randomOption" option
     And the user clicks on Angebote anfordern
     And the user uploads id
     Then the user checks, whether the file was uploaded

@@ -21,7 +21,7 @@ Feature: FlexCheck Calculator Functionality
         And the user should see the calculation results
         And the user clicks on Details anzeigen button
         Then the user should see values, as the user entered in the calculator based on Tilgung in % payment type
-        And the user selects an option
+        And the user selects "randomOption" option
         #And the user clicks on Angebote anfordern
         #And the user uploads id
         #And the user clicks on Weiter in DokumentHochladung page
@@ -45,7 +45,7 @@ Feature: FlexCheck Calculator Functionality
         And the user should see the calculation results
         And the user clicks on Details anzeigen button
         Then the user should see values, as the user entered in the calculator based on Monatliche Rate payment type
-        And the user selects an option
+        And the user selects "randomOption" option
 
 
     #@wip
@@ -64,4 +64,4 @@ Feature: FlexCheck Calculator Functionality
         And the user should see the calculation results
         And the user clicks on Details anzeigen button
         Then the user should see values, as the user entered in the calculator based on Gesamtlaufzeit payment type
-        And the user selects an option
+        And the user selects "randomOption" option

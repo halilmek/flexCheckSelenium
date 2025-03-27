@@ -4,6 +4,7 @@ import com.test.pages.*;
 import com.test.utilities.ConfigurationReader;
 import com.test.utilities.Driver;
 import com.test.utilities.TestDataGenerator;
+import com.test.utilities.Utils;
 
 import io.cucumber.java.en.*;
 import org.junit.jupiter.api.Assertions;
@@ -42,6 +43,7 @@ public class KreditberechnungSteps {
     String randomPropertyType = angabenZumObjektPage.getObjektart();
     String randomJahreFürGesamtlaufzeit = TestDataGenerator.generateJahreFürGesamtlaufzeit();
     String randomMonateFürGesamtlaufzeit = TestDataGenerator.generateMonateFürGesamtlaufzeit();
+    String randomOption = TestDataGenerator.generateOptionNumber();
 
     @Given("the user is on the FlexCheck calculator page")
     public void the_user_is_on_the_flex_check_calculator_page() {
@@ -190,6 +192,9 @@ public class KreditberechnungSteps {
     //Options Test
     @When("the user selects {string} option")
     public void theUserSelectsOption(String optionNumber) {
+        if (optionNumber.equalsIgnoreCase("randomOption")) {
+            optionNumber = randomOption;
+        }
         offerSelectionPage.selectOption(optionNumber);
     }
 
@@ -335,5 +340,375 @@ public class KreditberechnungSteps {
     @Then("the user should see the error message for file upload")
     public void theUserShouldSeeTheErrorMessageForFileUpload() {
         finalPage.notSuccessMessageDisplayedForFileUpload();
+    }
+
+    //==========================Data Persistence Steps============================
+    
+    @When("the user clicks on back button to return to previous page")
+    public void theUserClicksOnBackButtonToPreviousPage() throws InterruptedException {
+        logger.info("Clicking back button to return to previous page");
+        try {
+            // Store the current URL
+            String currentUrl = Driver.getDriver().getCurrentUrl();
+            
+            // Click the browser's back button
+            Driver.getDriver().navigate().back();
+            
+            // Wait for URL to change
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+            wait.until(driver -> !driver.getCurrentUrl().equals(currentUrl));
+            
+            // Wait for page load
+            wait.until(driver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete"));
+            
+            // Add a small pause to ensure dynamic content is loaded
+            Thread.sleep(2000);
+            
+            logger.info("Successfully navigated back to previous page");
+        } catch (Exception e) {
+            logger.error("Failed to navigate back: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @Then("the loan amount should still be {string}")
+    public void theLoanAmountShouldStillBe(String expectedAmount) {
+        logger.info("Verifying loan amount persistence");
+        try {
+            if (expectedAmount.equals("randomLoanAmount")) {
+                expectedAmount = randomLoanAmount;
+            }
+            String actualAmount = finanzierungPage.getDarlehensbetrag();
+            Assertions.assertEquals(expectedAmount, actualAmount, 
+                "Loan amount does not match the previously entered value");
+            logger.info("Loan amount verified successfully: {}", actualAmount);
+        } catch (Exception e) {
+            logger.error("Failed to verify loan amount: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @Then("the repayment percentage should still be {string}")
+    public void theRepaymentPercentageShouldStillBe(String expectedPercentage) {
+        logger.info("Verifying repayment percentage persistence");
+        try {
+            if (expectedPercentage.equals("randomRepaymentPercentage")) {
+                expectedPercentage = randomRepaymentPercentage;
+            }
+            String actualPercentage = finanzierungPage.getTilgung();
+            Assertions.assertEquals(expectedPercentage, actualPercentage, 
+                "Repayment percentage does not match the previously entered value");
+            logger.info("Repayment percentage verified successfully: {}", actualPercentage);
+        } catch (Exception e) {
+            logger.error("Failed to verify repayment percentage: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @Then("the first payout date should be preserved")
+    public void theFirstPayoutDateShouldBePreserved() {
+        logger.info("Verifying first payout date persistence");
+        try {
+            String expectedDate = finanzierungPage.getExpectedAuszahlungsdatum();
+            String actualDate = finanzierungPage.getAuszahlungsdatum();
+            Assertions.assertEquals(expectedDate, actualDate, 
+                "First payout date does not match the previously entered value");
+            logger.info("First payout date verified successfully: {}", actualDate);
+        } catch (Exception e) {
+            logger.error("Failed to verify first payout date: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @When("the user clicks on back button to return to first page")
+    public void theUserClicksOnBackButtonToFirstPage() {
+        logger.info("Clicking back button to return to first page");
+        try {
+            Driver.getDriver().navigate().back();
+            // Wait for page to load and verify we're on the first page
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[name='postalCode']")));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("select[name='usagePurpose']")));
+            logger.info("Successfully navigated back to first page");
+        } catch (Exception e) {
+            logger.error("Failed to navigate back to first page: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @Then("the postal code should still be {string}")
+    public void thePostalCodeShouldStillBe(String expectedPostalCode) {
+        logger.info("Verifying postal code persistence");
+        try {
+            if (expectedPostalCode.equals("randomPostalCode")) {
+                expectedPostalCode = randomPostalCode;
+            }
+            String actualPostalCode = angabenZumObjektPage.getPlz();
+            Assertions.assertEquals(expectedPostalCode, actualPostalCode, 
+                "Postal code does not match the previously entered value");
+            logger.info("Postal code verified successfully: {}", actualPostalCode);
+        } catch (Exception e) {
+            logger.error("Failed to verify postal code: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @Then("the purchase price should still be {string}")
+    public void thePurchasePriceShouldStillBe(String expectedPrice) {
+        logger.info("Verifying purchase price persistence");
+        try {
+            if (expectedPrice.equals("randomPurchasePrice")) {
+                expectedPrice = randomPurchasePrice;
+            }
+            String actualPrice = angabenZumObjektPage.getKaufpreis();
+            Assertions.assertEquals(expectedPrice, actualPrice, 
+                "Purchase price does not match the previously entered value");
+            logger.info("Purchase price verified successfully: {}", actualPrice);
+        } catch (Exception e) {
+            logger.error("Failed to verify purchase price: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @Then("the property type should still be {string}")
+    public void thePropertyTypeShouldStillBe(String expectedType) {
+        logger.info("Verifying property type persistence");
+        try {
+            if (expectedType.equals("randomPropertyType")) {
+                expectedType = randomPropertyType;
+            }
+            String actualType = angabenZumObjektPage.getSelectedObjektart();
+            Assertions.assertEquals(expectedType, actualType, 
+                "Property type does not match the previously entered value");
+            logger.info("Property type verified successfully: {}", actualType);
+        } catch (Exception e) {
+            logger.error("Failed to verify property type: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @Then("the user should see the uploaded file")
+    public void theUserShouldSeeTheUploadedFile() {
+        logger.info("Verifying uploaded file persistence");
+        try {
+            dokumentHochladenPage.verifyFileUpload();
+            logger.info("Uploaded file verified successfully");
+        } catch (Exception e) {
+            logger.error("Failed to verify uploaded file: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @And("the user clicks on weiter button to return to last page")
+    public void theUserClicksOnWeiterButtonToReturnToLastPage() {
+        try {
+            dokumentHochladenPage.verifyFileUpload();
+            dokumentHochladenPage.clickingWeiterButtonInDokumentHochladungPage();
+        } catch (Exception e) {
+            logger.error("Error clicking weiter button to return to last page: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    @Then("the user should see the text, what the user wrote in the message field before")
+    public void theUserShouldSeeTheMessageText() {
+        logger.info("Verifying message text persistence");
+        FinalPage finalPage = new FinalPage();
+        boolean messageVerified = finalPage.getEnteredMessageInFinalPage();
+        Assertions.assertTrue(messageVerified, "Message text verification failed");
+        logger.info("Message text verification {}", messageVerified ? "successful" : "failed");
+    }
+
+    @When("the user clicks on back button to return to upload page")
+    public void theUserClicksOnBackButtonToUploadPage() {
+        logger.info("Clicking back button to return to upload page");
+        finalPage.clickBackButtonnFinalPage();
+    }
+
+    @When("the user clicks on back button to return to Wahlen Sie Ihre gewünschte Kondition page")
+    public void theUserClicksOnBackButtonToOfferSelectionPage() {
+        dokumentHochladenPage.clickZurueckButtonInDokumentHochladungPage();
+    }
+
+    @When("the user clicks on back button to return to Angaben zum Finanzierungswunsch page")
+    public void theUserClicksOnBackButtonToFinanzierungPage() {
+        logger.info("Clicking back button to return to Finanzierung page");
+        offerSelectionPage.clickZurueckButtonInOfferSelectionPage();
+    }
+
+    @When("the user clicks on back button to return to Angaben zum Objekt page")
+    public void theUserClicksOnBackButtonToObjektPage() {
+        logger.info("Clicking back button to return to Objekt page");
+        try {
+            // Find and click the back button
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+            WebElement backButton = wait.until(ExpectedConditions.elementToBeClickable(
+                By.cssSelector("button.btn--nav-previous, button[class*='nav-previous'], button[class*='zurück']")
+            ));
+            backButton.click();
+            
+            // Wait for Objekt page to load
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[name='postalCode']")));
+            logger.info("Successfully navigated back to Objekt page");
+        } catch (Exception e) {
+            logger.error("Failed to navigate back to Objekt page: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @Then("the user should see, what the user selected in that page before")
+    public void theUserShouldSeeSelectedOption() {
+        logger.info("Verifying selected option persistence");
+        logger.info("Selected option number: {}", randomOption);
+        
+        try {
+            // Wait for page to load after navigation
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(20));
+            
+            // Try multiple selectors to find the offer container
+            String[] possibleSelectors = {
+                ".panel-card-button", 
+                ".offer-container", 
+                ".offer-selection-container",
+                "[data-testid='offer-container']",
+                "table.offer-table"
+            };
+            
+            boolean foundElement = false;
+            for (String selector : possibleSelectors) {
+                try {
+                    logger.info("Trying to locate offer element with selector: {}", selector);
+                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(selector)));
+                    logger.info("Successfully found element with selector: {}", selector);
+                    foundElement = true;
+                    break;
+                } catch (Exception e) {
+                    logger.info("Could not find element with selector: {}", selector);
+                }
+            }
+            
+            if (!foundElement) {
+                logger.error("Could not find any offer container element");
+                Utils.takeScreenshot(Driver.getDriver(), "offer-container-not-found");
+                throw new AssertionError("Could not find any offer container element after navigation");
+            }
+            
+            // Execute JavaScript to check for radio button selection
+            JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
+            
+            // Simple script to find selected option
+            String simpleScript = 
+                "var options = document.querySelectorAll('.panel-card-button');" +
+                "var result = null;" +
+                "for (var i = 0; i < options.length; i++) {" +
+                "  var option = options[i];" +
+                "  var showChosen = option.querySelector('.hidden-unforced.show-chosen');" +
+                "  if (showChosen && (window.getComputedStyle(showChosen).display !== 'none')) {" +
+                "    result = {" +
+                "      index: i + 1," +
+                "      hasShownChosen: true," +
+                "      displayValue: window.getComputedStyle(showChosen).display," +
+                "      elementId: option.id || 'no-id'" +
+                "    };" +
+                "    break;" +
+                "  }" +
+                "}" +
+                "return result;";
+            
+            Map<String, Object> result = (Map<String, Object>) js.executeScript(simpleScript);
+            
+            // Print all keys and values from the map for debugging
+            logger.info("JavaScript result map contents:");
+            if (result != null) {
+                for (Map.Entry<String, Object> entry : result.entrySet()) {
+                    logger.info("  {} = {}", entry.getKey(), entry.getValue());
+                }
+                
+                int selectedIndex = ((Long) result.get("index")).intValue();
+                logger.info("Found selected option at index: {}", selectedIndex);
+                
+                // Verify if this matches our expected selection
+                Assertions.assertEquals(Integer.parseInt(randomOption), selectedIndex,
+                    "Selected option does not match the expected option");
+                
+                logger.info("Successfully verified selected option persistence");
+            } else {
+                // Try a direct class-based check without computed style
+                String directCheckScript = 
+                    "var options = document.querySelectorAll('.panel-card-button');" +
+                    "return options.length;";
+                
+                Long optionsCount = (Long) js.executeScript(directCheckScript);
+                logger.info("Found {} panel-card-button elements", optionsCount);
+                
+                // Take screenshot for debugging
+                Utils.takeScreenshot(Driver.getDriver(), "no-selected-option");
+                logger.error("No selected option found. Number of options: {}", optionsCount);
+                
+                throw new AssertionError("No selected option found among " + optionsCount + " options");
+            }
+        } catch (Exception e) {
+            logger.error("Failed to verify selected option persistence: {}", e.getMessage());
+            Utils.takeScreenshot(Driver.getDriver(), "option-verification-failure");
+            throw e;
+        }
+    }
+
+    @Then("the user should see same values, as the user entered in Finanzierung page before")
+    public void theUserShouldSeeSameValuesInFinanzierungPage() {
+        logger.info("Verifying all values persistence in Finanzierung page");
+        try {
+            // Verify loan amount
+            String expectedAmount = randomLoanAmount;
+            String actualAmount = finanzierungPage.getDarlehensbetrag();
+            Assertions.assertEquals(expectedAmount, actualAmount, 
+                "Loan amount does not match the previously entered value");
+
+            // Verify repayment percentage
+            String expectedPercentage = randomRepaymentPercentage;
+            String actualPercentage = finanzierungPage.getTilgung();
+            Assertions.assertEquals(expectedPercentage, actualPercentage, 
+                "Repayment percentage does not match the previously entered value");
+
+            // Verify first payout date
+            String expectedDate = finanzierungPage.getExpectedAuszahlungsdatum();
+            String actualDate = finanzierungPage.getAuszahlungsdatum();
+            Assertions.assertEquals(expectedDate, actualDate, 
+                "First payout date does not match the previously entered value");
+
+            logger.info("All values in Finanzierung page verified successfully");
+        } catch (Exception e) {
+            logger.error("Failed to verify values in Finanzierung page: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @Then("the user should see same values, as the user entered in Objekt page before")
+    public void theUserShouldSeeSameValuesInObjektPage() {
+        logger.info("Verifying all values persistence in Objekt page");
+        try {
+            // Verify postal code
+            String expectedPostalCode = randomPostalCode;
+            String actualPostalCode = angabenZumObjektPage.getPlz();
+            Assertions.assertEquals(expectedPostalCode, actualPostalCode, 
+                "Postal code does not match the previously entered value");
+
+            // Verify purchase price
+            String expectedPrice = randomPurchasePrice;
+            String actualPrice = angabenZumObjektPage.getKaufpreis();
+            Assertions.assertEquals(expectedPrice, actualPrice, 
+                "Purchase price does not match the previously entered value");
+
+            // Verify property type
+            String expectedType = randomPropertyType;
+            String actualType = angabenZumObjektPage.getSelectedObjektart();
+            Assertions.assertEquals(expectedType, actualType, 
+                "Property type does not match the previously selected value");
+
+            logger.info("All values in Objekt page verified successfully");
+        } catch (Exception e) {
+            logger.error("Failed to verify values in Objekt page: {}", e.getMessage());
+            throw e;
+        }
     }
 } 
