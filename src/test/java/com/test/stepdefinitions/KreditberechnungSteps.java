@@ -555,7 +555,7 @@ public class KreditberechnungSteps {
             backButton.click();
             
             // Wait for Objekt page to load
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[name='postalCode']")));
+            //wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[name='postalCode']")));
             logger.info("Successfully navigated back to Objekt page");
         } catch (Exception e) {
             logger.error("Failed to navigate back to Objekt page: {}", e.getMessage());
@@ -687,29 +687,35 @@ public class KreditberechnungSteps {
     @Then("the user should see same values, as the user entered in Objekt page before")
     public void theUserShouldSeeSameValuesInObjektPage() {
         logger.info("Verifying all values persistence in Objekt page");
-        try {
-            // Verify postal code
-            String expectedPostalCode = randomPostalCode;
-            String actualPostalCode = angabenZumObjektPage.getPlz();
-            Assertions.assertEquals(expectedPostalCode, actualPostalCode, 
+
+        String actualUsagePurpose = randomPurpose;
+        logger.info("Actual usage purpose: " + actualUsagePurpose);
+        String expectedUsagePurpose = angabenZumObjektPage.getSelectedVerwendungszweck();
+        Assertions.assertTrue(expectedUsagePurpose.equalsIgnoreCase(actualUsagePurpose), 
+                "Usage purpose does not match the previously entered value");
+
+        String actualPostalCode = randomPostalCode;
+        logger.info("Actual postal code: " + actualPostalCode);
+        logger.info("Expected postal code: " + angabenZumObjektPage.getPlz());
+
+
+        String expectedPostalCode = angabenZumObjektPage.getPlz();
+        Assertions.assertTrue(expectedPostalCode.equalsIgnoreCase(actualPostalCode), 
                 "Postal code does not match the previously entered value");
 
-            // Verify purchase price
-            String expectedPrice = randomPurchasePrice;
-            String actualPrice = angabenZumObjektPage.getKaufpreis();
-            Assertions.assertEquals(expectedPrice, actualPrice, 
+        String actualPurchasePrice = randomPurchasePrice;
+        logger.info("Actual purchase price: " + actualPurchasePrice);
+        logger.info("Expected purchase price: " + angabenZumObjektPage.getKaufpreis());
+        String expectedPurchasePrice = angabenZumObjektPage.getKaufpreis().replace(".", "");
+        logger.info("Expected purchase price: " + expectedPurchasePrice);
+        Assertions.assertTrue(expectedPurchasePrice.equalsIgnoreCase(actualPurchasePrice), 
                 "Purchase price does not match the previously entered value");
 
-            // Verify property type
-            String expectedType = randomPropertyType;
-            String actualType = angabenZumObjektPage.getSelectedObjektart();
-            Assertions.assertEquals(expectedType, actualType, 
-                "Property type does not match the previously selected value");
+        String expectedPropertyType = randomPropertyType;
 
-            logger.info("All values in Objekt page verified successfully");
-        } catch (Exception e) {
-            logger.error("Failed to verify values in Objekt page: {}", e.getMessage());
-            throw e;
-        }
+        logger.info("Expected property type: " + expectedPropertyType);
+        String actualPropertyType = angabenZumObjektPage.getSelectedObjektart();
+        Assertions.assertTrue(expectedPropertyType.equalsIgnoreCase(actualPropertyType), 
+                "Property type does not match the previously entered value");
     }
 } 

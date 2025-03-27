@@ -167,15 +167,33 @@ public class AngabenZumObjektPage extends BasePage {
     // Getter methods for verification purposes
     public String getSelectedVerwendungszweck() {
         Select select = new Select(verwendungszweckDropdown);
+        logger.info("Selected usage purpose: " + select.getFirstSelectedOption().getText());
         return select.getFirstSelectedOption().getText();
     }
 
     public String getEnteredPLZ() {
-        return plzInput.getAttribute("value");
+
+        try {
+            String valueFromProperty = (String) js.executeScript("return arguments[0].value;", plzInput);
+            logger.info("Value from property: " + valueFromProperty);
+            return valueFromProperty;
+        } catch (Exception e) {
+            logger.error("Failed to verify values for postal code in Objekt page: {}", e.getMessage());
+            throw e;
+        }   
     }
 
     public String getEnteredKaufpreis() {
-        return kaufpreisInput.getAttribute("value");
+        
+        try {
+            String valueFromProperty = (String) js.executeScript("return arguments[0].value;", kaufpreisInput);
+            logger.info("Value from property: " + valueFromProperty);
+            String expectedAmount = valueFromProperty.replace(".", "");
+            return expectedAmount;
+        } catch (Exception e) {
+            logger.error("Failed to verify values for purchase price in Objekt page: {}", e.getMessage());
+            throw e;
+        }
     }
 
     /**
@@ -185,7 +203,9 @@ public class AngabenZumObjektPage extends BasePage {
     public String getSelectedObjektart() {
         WebElement element = Driver.getDriver().findElement(By.id("objektart"));
         Select select = new Select(element);
-        return select.getFirstSelectedOption().getText();
+        String actualPropertyType = select.getFirstSelectedOption().getText();
+        logger.info("Selected property type: " + actualPropertyType);
+        return actualPropertyType;
     }
 
     /**
