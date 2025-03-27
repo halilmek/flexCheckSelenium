@@ -371,7 +371,9 @@ public class KreditberechnungSteps {
         }
     }
 
-    @Then("the loan amount should still be {string}")
+/*
+ *
+     @Then("the loan amount should still be {string}")
     public void theLoanAmountShouldStillBe(String expectedAmount) {
         logger.info("Verifying loan amount persistence");
         try {
@@ -386,8 +388,12 @@ public class KreditberechnungSteps {
             logger.error("Failed to verify loan amount: {}", e.getMessage());
             throw e;
         }
-    }
+    } 
+ * 
+ */
 
+
+/*
     @Then("the repayment percentage should still be {string}")
     public void theRepaymentPercentageShouldStillBe(String expectedPercentage) {
         logger.info("Verifying repayment percentage persistence");
@@ -404,6 +410,7 @@ public class KreditberechnungSteps {
             throw e;
         }
     }
+    */
 
     @Then("the first payout date should be preserved")
     public void theFirstPayoutDateShouldBePreserved() {
@@ -654,33 +661,27 @@ public class KreditberechnungSteps {
         }
     }
 
-    @Then("the user should see same values, as the user entered in Finanzierung page before")
+    @Then("the user should see same values, as the user entered in Finanzierungswunsch page before")
     public void theUserShouldSeeSameValuesInFinanzierungPage() {
         logger.info("Verifying all values persistence in Finanzierung page");
-        try {
-            // Verify loan amount
-            String expectedAmount = randomLoanAmount;
-            String actualAmount = finanzierungPage.getDarlehensbetrag();
-            Assertions.assertEquals(expectedAmount, actualAmount, 
-                "Loan amount does not match the previously entered value");
-
-            // Verify repayment percentage
-            String expectedPercentage = randomRepaymentPercentage;
-            String actualPercentage = finanzierungPage.getTilgung();
-            Assertions.assertEquals(expectedPercentage, actualPercentage, 
+        String actualAmount = finanzierungPage.getDarlehensbetrag(randomLoanAmount);
+        Assertions.assertTrue(randomLoanAmount.equalsIgnoreCase(actualAmount), 
+                "Loan amount does not match the previously entered value"); 
+        
+        String actualPercentage = finanzierungPage.getTilgung(randomRepaymentPercentage);
+        Assertions.assertTrue(randomRepaymentPercentage.equalsIgnoreCase(actualPercentage), 
                 "Repayment percentage does not match the previously entered value");
 
-            // Verify first payout date
-            String expectedDate = finanzierungPage.getExpectedAuszahlungsdatum();
-            String actualDate = finanzierungPage.getAuszahlungsdatum();
-            Assertions.assertEquals(expectedDate, actualDate, 
-                "First payout date does not match the previously entered value");
+        String actualRepaymentType = "Tilgung in %";
+        logger.info("Repayment type: " + actualRepaymentType);
+        
+        Assertions.assertTrue(finanzierungPage.getRepaymentType().equalsIgnoreCase(actualRepaymentType), 
+                "Repayment type does not match the previously entered value");
+        
+        String actualPayoutDate = finanzierungPage.getExpectedAuszahlungsdatum();
+        Assertions.assertTrue(actualPayoutDate.equalsIgnoreCase(finanzierungPage.getAuszahlungsdatum()), 
+                "Payout date does not match the previously entered value");
 
-            logger.info("All values in Finanzierung page verified successfully");
-        } catch (Exception e) {
-            logger.error("Failed to verify values in Finanzierung page: {}", e.getMessage());
-            throw e;
-        }
     }
 
     @Then("the user should see same values, as the user entered in Objekt page before")

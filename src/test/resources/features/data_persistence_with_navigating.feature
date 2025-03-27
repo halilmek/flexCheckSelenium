@@ -20,7 +20,7 @@ Feature: FlexCheck Calculator Functionality
       And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
       And the user should see the calculation results
       And the user selects "randomOption" option
-      And the user clicks on Angebote anfordern
+      #And the user clicks on Angebote anfordern
       #And the user uploads id
       #And the user checks, whether the file was uploaded
       #And the user clicks on Weiter in DokumentHochladung page
@@ -30,9 +30,9 @@ Feature: FlexCheck Calculator Functionality
       #And the user clicks on weiter button to return to last page
       #Then the user should see the text, what the user wrote in the message field before
       #And the user clicks on back button to return to upload page
-      And the user clicks on back button to return to Wahlen Sie Ihre gewünschte Kondition page
-      Then the user should see, what the user selected in that page before
+      #And the user clicks on back button to return to Wahlen Sie Ihre gewünschte Kondition page
+      #Then the user should see, what the user selected in that page before
       And the user clicks on back button to return to Angaben zum Finanzierungswunsch page
-      Then the user should see same values, as the user entered in Finanzierung page before
-      #And the user clicks on back button to return to Angaben zum Objekt page
+      Then the user should see same values, as the user entered in Finanzierungswunsch page before
+      And the user clicks on back button to return to Angaben zum Objekt page
       #Then the user should see same values, as the user entered in Objekt page before

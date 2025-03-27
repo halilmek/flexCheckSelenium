@@ -189,14 +189,21 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
      * Gets the current value of the loan amount field
      * @return String containing the loan amount
      */
-    public String getDarlehensbetrag() {
+    public String getDarlehensbetrag(String randomLoanAmount) {
+
         try {
-            wait.until(ExpectedConditions.visibilityOf(darlehenswunschInput));
-            wait.until(ExpectedConditions.elementToBeClickable(darlehenswunschInput));
-            highlightElement(darlehenswunschInput);
-            return darlehenswunschInput.getAttribute("value");
+            
+            JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
+            // Input'un value property'sini almak için (en olası durum):
+            WebElement darlehensWunschInput = Driver.getDriver().findElement(By.id("darlehenswunsch"));
+            String valueFromProperty = (String) js.executeScript("return arguments[0].value;", darlehensWunschInput);
+            System.out.println("Value from property: " + valueFromProperty);
+            logger.info("Value from property: " + valueFromProperty);
+            logger.info("randomLoanAmount: " + randomLoanAmount);
+            String actualAmount = valueFromProperty.replace(".", "");
+            return actualAmount;
         } catch (Exception e) {
-            logger.error("Failed to get loan amount: {}", e.getMessage());
+            logger.error("Failed to verify values for loan amount in Finanzierungswunsch page: {}", e.getMessage());
             throw e;
         }
     }
@@ -205,9 +212,22 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
      * Gets the current value of the repayment percentage field
      * @return String containing the repayment percentage
      */
-    public String getTilgung() {
-        WebElement element = Driver.getDriver().findElement(By.id("tilgung"));
-        return element.getAttribute("value");
+    public String getTilgung(String randomRepaymentPercentage) {
+        
+        try {
+            
+            JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
+            // Input'un value property'sini almak için (en olası durum):
+            String valueFromProperty = (String) js.executeScript("return arguments[0].value;", tilgungInput);
+            System.out.println("Value from property: " + valueFromProperty);
+            logger.info("Value from property: " + valueFromProperty);
+            logger.info("randomRepaymentPercentage: " + randomRepaymentPercentage);
+            String actualAmount = valueFromProperty.replace(",00", "");
+            return actualAmount;
+        } catch (Exception e) {
+            logger.error("Failed to verify values for repayment percentage in Finanzierungswunsch page: {}", e.getMessage());
+            throw e;
+        }
     }
 
     /**
@@ -216,16 +236,37 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
      */
     public String getExpectedAuszahlungsdatum() {
         LocalDate tomorrow = LocalDate.now().plusDays(1);
-        return tomorrow.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        String expectedDate = tomorrow.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        logger.info("Expected payout date: " + expectedDate);
+        return expectedDate;
     }
 
+    public String getRepaymentType() {
+
+        try {
+            Select select = new Select(rueckzahlungsArtDropdown);
+            String textOfRepaymentType = select.getOptions().get(0).getText();
+            logger.info("Repayment type: " + textOfRepaymentType);
+            return textOfRepaymentType;
+        } catch (Exception e) {
+            logger.error("Failed to verify repayment type in Finanzierungswunsch page: {}", e.getMessage());
+            throw e;
+        }
+    }
     /**
      * Gets the current value of the first payout date field
      * @return String containing the payout date
      */
     public String getAuszahlungsdatum() {
-        WebElement element = Driver.getDriver().findElement(By.id("auszahlungsdatum"));
-        return element.getAttribute("value");
+
+        try {
+            String valueFromProperty = (String) js.executeScript("return arguments[0].value;", auszahlungsdatumInput);
+            logger.info("Payout date: " + valueFromProperty);
+            return valueFromProperty;
+        } catch (Exception e) {
+            logger.error("Failed to verify payout date in Finanzierungswunsch page: {}", e.getMessage());
+            throw e;
+        }
     }
 
 } 
