@@ -214,6 +214,7 @@ public class AngabenZumObjektPage extends BasePage {
      */
     public String getPlz() {
         WebElement element = Driver.getDriver().findElement(By.id("plz"));
+        logger.info("Postal code: " + element.getAttribute("value"));
         return element.getAttribute("value");
     }
 
@@ -221,8 +222,9 @@ public class AngabenZumObjektPage extends BasePage {
      * Gets the current value of the purchase price field
      * @return String containing the purchase price
      */
-    public String getKaufpreis() {
+    public String   getKaufpreis() {
         WebElement element = Driver.getDriver().findElement(By.id("kaufpreis"));
+        logger.info("Purchase price: " + element.getAttribute("value"));
         return element.getAttribute("value");
     }
 

@@ -474,7 +474,7 @@ public class KreditberechnungSteps {
 
     @Then("the user should see same values for Tilgung in % as payment type, as the user entered in Finanzierungswunsch page before")
     public void theUserShouldSeeSameValuesInFinanzierungPage() {
-        logger.info("Verifying all values persistence in Finanzierung page");
+
         String actualAmount = finanzierungPage.getDarlehensbetrag(randomLoanAmount);
         Assertions.assertTrue(randomLoanAmount.equalsIgnoreCase(actualAmount), 
                 "Loan amount does not match the previously entered value"); 
@@ -499,32 +499,22 @@ public class KreditberechnungSteps {
     public void theUserShouldSeeSameValuesInObjektPage() {
         logger.info("Verifying all values persistence in Objekt page");
 
-        String actualUsagePurpose = randomPurpose;
-        logger.info("Actual usage purpose: " + actualUsagePurpose);
-        String expectedUsagePurpose = angabenZumObjektPage.getSelectedVerwendungszweck();
+        String expectedUsagePurpose = randomPurpose;
+        String actualUsagePurpose = angabenZumObjektPage.getSelectedVerwendungszweck();
         Assertions.assertTrue(expectedUsagePurpose.equalsIgnoreCase(actualUsagePurpose), 
                 "Usage purpose does not match the previously entered value");
 
-        String actualPostalCode = randomPostalCode;
-        logger.info("Actual postal code: " + actualPostalCode);
-        logger.info("Expected postal code: " + angabenZumObjektPage.getPlz());
-
-
-        String expectedPostalCode = angabenZumObjektPage.getPlz();
+        String expectedPostalCode = randomPostalCode;
+        String actualPostalCode = angabenZumObjektPage.getPlz();
         Assertions.assertTrue(expectedPostalCode.equalsIgnoreCase(actualPostalCode), 
                 "Postal code does not match the previously entered value");
 
         String expectedPurchasePrice = randomPurchasePrice;
-        logger.info("Expected purchase price: " + expectedPurchasePrice);
-        logger.info("Actual purchase price: " + angabenZumObjektPage.getKaufpreis());
         String actualPurchasePrice = angabenZumObjektPage.getKaufpreis().replace(".", "");
-        logger.info("Actual purchase price: " + actualPurchasePrice);
         Assertions.assertTrue(expectedPurchasePrice.equalsIgnoreCase(actualPurchasePrice), 
                 "Purchase price does not match the previously entered value");
 
         String expectedPropertyType = randomPropertyType;
-
-        logger.info("Expected property type: " + expectedPropertyType);
         String actualPropertyType = angabenZumObjektPage.getSelectedObjektart();
         Assertions.assertTrue(expectedPropertyType.equalsIgnoreCase(actualPropertyType), 
                 "Property type does not match the previously entered value");
@@ -533,12 +523,9 @@ public class KreditberechnungSteps {
     @Then("the user should see same values for monatliche Rate as payment type, as the user entered in Finanzierungswunsch page before")
     public void theUserShouldSeeSameValuesForMonatlicheRateAsPaymentType() {
     
-        logger.info("Verifying all values persistence in Finanzierung page");
         String actualAmount = finanzierungPage.getDarlehensbetrag(randomLoanAmount);
         Assertions.assertTrue(randomLoanAmount.equalsIgnoreCase(actualAmount), 
                 "Loan amount does not match the previously entered value"); 
-        
-
         
         
         String actualPayoutDate = finanzierungPage.getExpectedAuszahlungsdatum();
@@ -546,13 +533,11 @@ public class KreditberechnungSteps {
                 "Payout date does not match the previously entered value");
 
         String expectedRepaymentType = "monatliche Rate";
-        logger.info("Repayment type: " + expectedRepaymentType);
         Assertions.assertTrue(finanzierungPage.getRepaymentType().equalsIgnoreCase(expectedRepaymentType), 
         "Repayment type does not match the previously entered value");
 
 
         String expectedMonthlyPayment = randomMonthlyPayment;
-        logger.info("Monthly payment: " + expectedMonthlyPayment);
         Assertions.assertTrue(finanzierungPage.getMonatlicheRate().equalsIgnoreCase(expectedMonthlyPayment), 
                 "Monthly payment does not match the previously entered value");
 
@@ -562,7 +547,6 @@ public class KreditberechnungSteps {
     public void theUserShouldSeeSameValuesForGesamtlaufzeitAsPaymentType() {
         
 
-        logger.info("Verifying all values persistence in Finanzierung page");
         String actualAmount = finanzierungPage.getDarlehensbetrag(randomLoanAmount);
         Assertions.assertTrue(randomLoanAmount.equalsIgnoreCase(actualAmount), 
                 "Loan amount does not match the previously entered value"); 
@@ -572,20 +556,16 @@ public class KreditberechnungSteps {
                 "Payout date does not match the previously entered value");
 
 
-
         String expectedRepaymentType = "Gesamtlaufzeit";
-        logger.info("Repayment type: " + expectedRepaymentType);
         Assertions.assertTrue(finanzierungPage.getRepaymentType().equalsIgnoreCase(expectedRepaymentType), 
         "Repayment type does not match the previously entered value");
 
 
         String expectedTotalTermYears = randomJahreFürGesamtlaufzeit;
-        logger.info("Total term years: " + expectedTotalTermYears);
         Assertions.assertTrue(finanzierungPage.getGesamtlaufzeitJahre().equalsIgnoreCase(expectedTotalTermYears), 
                 "Total term years does not match the previously entered value");
 
         String expectedTotalTermMonths = randomMonateFürGesamtlaufzeit;
-        logger.info("Total term months: " + expectedTotalTermMonths);
         Assertions.assertTrue(finanzierungPage.getGesamtlaufzeitMonate().equalsIgnoreCase(expectedTotalTermMonths), 
                 "Total term months does not match the previously entered value");
 
@@ -598,6 +578,8 @@ public class KreditberechnungSteps {
     }
 
 
+
+    //======================in order to get options visuality status through javascript with displayValue=========================
 
     @Then("the user should verify the option is selected")
     public void theUserShouldVerifyTheOptionIsSelected() throws InterruptedException {

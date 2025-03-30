@@ -252,6 +252,9 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
 
         try {
             
+            logger.info("Verifying all values persistence in Finanzierung page");
+
+
             JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
             // Input'un value property'sini almak için (en olası durum):
             WebElement darlehensWunschInput = Driver.getDriver().findElement(By.id("darlehenswunsch"));
