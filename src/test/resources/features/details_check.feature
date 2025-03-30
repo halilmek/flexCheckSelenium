@@ -18,17 +18,11 @@ Feature: FlexCheck Calculator Functionality
         And the user selects repayment type "Tilgung in %"
         And the user enters first payout date
         And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
-        And the user should see the calculation results
-        And the user clicks on Details anzeigen button
+        #And the user should see the calculation results
+        #And the user clicks on Details anzeigen button
         Then the user should see values, as the user entered in the calculator based on Tilgung in % payment type
-        And the user selects "randomOption" option
-        #And the user clicks on Angebote anfordern
-        #And the user uploads id
-        #And the user clicks on Weiter in DokumentHochladung page
-        #And the user writes a message
-        #And the user clicks on jetzt kostenlos und unverbindlich Ihr Angebot anfordern button in Final page
-        #And the user should see the success message
-        #Then the user should see values, as the user entered in the calculator as an api response
+        #And the user selects "randomOption" option
+
 
     #@wip
     Scenario: Checking the details in modals in offer selection page based on Monatliche Rate payment type

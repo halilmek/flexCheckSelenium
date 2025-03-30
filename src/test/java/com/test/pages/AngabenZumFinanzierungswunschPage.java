@@ -8,10 +8,12 @@ import org.openqa.selenium.support.PageFactory;
 import com.test.utilities.BrowserUtil;
 import com.test.utilities.Driver;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -152,38 +154,95 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
         }
     }
 
+
+
+    public void clickBackButtonInAngabenZumFinanzierungswunschPage() {
+
+        logger.info("Clicking back button to return to Objekt page");
+        try {
+            // Find and click the back button
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+            WebElement backButton = wait.until(ExpectedConditions.elementToBeClickable(
+                By.cssSelector("button.btn--nav-previous, button[class*='nav-previous'], button[class*='zurück']")
+            ));
+            backButton.click();
+            
+            // Wait for Objekt page to load
+            //wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[name='postalCode']")));
+            logger.info("Successfully navigated back to Objekt page");
+        } catch (Exception e) {
+            logger.error("Failed to navigate back to Objekt page: {}", e.getMessage());
+            throw e;
+        }
+    }   
+
+
+
     public void enterMonthlyPayment(String amount) {
-        wait.until(ExpectedConditions.elementToBeClickable(monthlyPaymentInput));
-        highlightElement(monthlyPaymentInput);
-        //takeScreenshot("before-entering-monthly-payment");
-        monthlyPaymentInput.clear();
-        monthlyPaymentInput.sendKeys(amount);
-        //takeScreenshot("after-entering-monthly-payment");
-        logger.info("Entered monthly payment: {}", amount);
+
+        try {
+            logger.info("Entering monthly payment amount: {}", amount);
+            wait.until(ExpectedConditions.elementToBeClickable(monthlyPaymentInput));
+            highlightElement(monthlyPaymentInput);
+
+            //takeScreenshot("before-entering-monthly-payment");
+
+            monthlyPaymentInput.clear();
+            monthlyPaymentInput.sendKeys(amount);
+
+            //takeScreenshot("after-entering-monthly-payment");
+
+            logger.info("Successfully entered monthly payment");
+        } catch (Exception e) {
+            logger.error("Failed to enter monthly payment: {}", e.getMessage());
+            throw e;
+        }
     }
 
-
-
-
     public void enterTotalTermYears(String years) {
-        wait.until(ExpectedConditions.elementToBeClickable(totalTermYearsInput));
-        highlightElement(totalTermYearsInput);
-        //takeScreenshot("before-entering-term-years");
-        totalTermYearsInput.clear();
-        totalTermYearsInput.sendKeys(years);
-        //takeScreenshot("after-entering-term-years");
-        logger.info("Entered total term years: {}", years);
+
+        try {
+            
+            wait.until(ExpectedConditions.elementToBeClickable(totalTermYearsInput));
+            logger.info("Entered total term years: {}", years);
+            highlightElement(totalTermYearsInput);
+
+            //takeScreenshot("before-entering-term-years");
+
+            totalTermYearsInput.clear();
+            totalTermYearsInput.sendKeys(years);
+
+            //takeScreenshot("after-entering-term-years");
+            logger.info("Successfully entered total term in years");
+
+        } catch (Exception e) {
+            logger.error("Failed to enter total term years: {}", e.getMessage());
+            throw e;
+        }
     }
 
     public void enterTotalTermMonths(String months) {
-        wait.until(ExpectedConditions.elementToBeClickable(totalTermMonthsInput));
-        highlightElement(totalTermMonthsInput);
-        //takeScreenshot("before-entering-term-months");
-        totalTermMonthsInput.clear();
-        totalTermMonthsInput.sendKeys(months);
-        //takeScreenshot("after-entering-term-months");
-        logger.info("Entered total term months: {}", months);
+
+        try {
+            
+            logger.info("Entered total term months: {}", months);
+            wait.until(ExpectedConditions.elementToBeClickable(totalTermMonthsInput));
+            highlightElement(totalTermMonthsInput);
+            //takeScreenshot("before-entering-term-months");
+    
+            totalTermMonthsInput.clear();
+            totalTermMonthsInput.sendKeys(months);
+            //takeScreenshot("after-entering-term-months");
+    
+            logger.info("Successfully entered total term in months");
+        } catch (Exception e) {
+            logger.error("Failed to enter total term months: {}", e.getMessage());
+            throw e;
+        }
+        
     }
+
+
 
     /**
      * Gets the current value of the loan amount field
@@ -245,7 +304,7 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
 
         try {
             Select select = new Select(rueckzahlungsArtDropdown);
-            String textOfRepaymentType = select.getOptions().get(0).getText();
+            String textOfRepaymentType = select.getFirstSelectedOption().getText();
             logger.info("Repayment type: " + textOfRepaymentType);
             return textOfRepaymentType;
         } catch (Exception e) {
@@ -268,5 +327,48 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
             throw e;
         }
     }
+
+    public String getMonatlicheRate() {
+        try {
+            String valueFromProperty = (String) js.executeScript("return arguments[0].value;", monthlyPaymentInput);
+            logger.info("Monthly payment: " + valueFromProperty);
+            String actualAmount = valueFromProperty.replace(".", "");
+            logger.info("Actual amount: " + actualAmount);
+            return actualAmount;
+        } catch (Exception e) {
+            logger.error("Failed to verify monthly payment in Finanzierungswunsch page: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+
+    public String getGesamtlaufzeitJahre() {
+        try {
+            String valueFromProperty = (String) js.executeScript("return arguments[0].value;", totalTermYearsInput);
+            logger.info("Total term years: " + valueFromProperty);
+            return valueFromProperty;
+        } catch (Exception e) {
+            logger.error("Failed to verify total term years in Finanzierungswunsch page: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    public String getGesamtlaufzeitMonate() {
+        try {
+            String valueFromProperty = (String) js.executeScript("return arguments[0].value;", totalTermMonthsInput);
+            logger.info("Total term months: " + valueFromProperty);
+            return valueFromProperty;
+        } catch (Exception e) {
+            logger.error("Failed to verify total term months in Finanzierungswunsch page: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    public void refreshPage() {
+        driver.navigate().refresh();
+        logger.info("Page refreshed");
+    }
+
+
 
 } 

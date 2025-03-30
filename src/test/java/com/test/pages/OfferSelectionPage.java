@@ -24,6 +24,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 /**
  * Page Object für die Angebotsauswahl-Seite des FLEXCHECK Moduls.
@@ -493,6 +501,449 @@ public class OfferSelectionPage extends BasePage {
             throw new RuntimeException("Failed to extract values from modal: " + e.getMessage(), e);
         }
     }
+
+
+    public boolean verifyingCalculatorValuesForTilgungPaymentType
+    (String randomPurchasePrice, String randomLoanAmount, String randomPurpose, String randomRepaymentPercentage) {
+
+        try {
+            
+                    // Log stored values for debugging
+        randomRepaymentPercentage = randomRepaymentPercentage + ",00 %";
+        logger.info("Stored values:");
+        logger.info("Purchase price: {}", randomPurchasePrice);
+        logger.info("Loan amount: {}", randomLoanAmount);
+        logger.info("Purpose: {}", randomPurpose);
+        logger.info("Repayment percentage: {}", randomRepaymentPercentage);
+
+        // Create map of expected values
+        Map<String, String> expectedValues = new HashMap<>();
+        expectedValues.put("Kaufpreis*:", randomPurchasePrice);
+        expectedValues.put("Nettodarlehensbetrag:", randomLoanAmount);
+        expectedValues.put("Verwendungszweck:", randomPurpose);
+        //expectedValues.put("Tilgung p.a.:", randomRepaymentPercentage);
+
+        // Verify values across all info buttons
+        boolean allValuesMatch = verifyAllDetailsValues(expectedValues);
+
+        logger.info("All values matched: {}", allValuesMatch);
+        //new Actions(Driver.getDriver()).pause(Duration.ofSeconds(10)).perform();
+        new Actions(Driver.getDriver()).sendKeys(Keys.ESCAPE).perform();
+
+        return allValuesMatch;
+
+        } catch (Exception e) {
+            logger.error("Error verifying calculator values for Tilgung payment type: {}", e.getMessage());
+            throw e;
+        }
+
+    }
+
+    public boolean verifyingCalculatorValuesForTilgungPaymentTypeInFirstModal
+    (String randomPurchasePrice, String... params) {
+
+        try {
+            WebElement infoButton1 = driver.findElement(By.xpath("//*[@id='detailsAnzeigenSollzinsbindung0']"));
+            WebElement closeButton1 = driver.findElement(By.xpath("//*[@id='angebotDetailModal0']/div/div/div[1]/div[2]/button"));
+            WebElement infoButton2 = driver.findElement(By.xpath("//*[@id='detailsAnzeigenSollzinsbindung1']"));
+            WebElement closeButton2 = driver.findElement(By.xpath("//*[@id='angebotDetailModal1']/div/div/div[1]/div[2]/button"));
+            WebElement infoButton3 = driver.findElement(By.xpath("//*[@id='detailsAnzeigenSollzinsbindung2']"));
+            WebElement closeButton3 = driver.findElement(By.xpath("//*[@id='angebotDetailModal2']/div/div/div[1]/div[2]/button"));
+            WebElement infoButton4 = driver.findElement(By.xpath("//*[@id='detailsAnzeigenSollzinsbindung3']"));
+            WebElement closeButton4 = driver.findElement(By.xpath("//*[@id='angebotDetailModal3']/div/div/div[1]/div[2]/button"));
+            
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+            wait.until(ExpectedConditions.visibilityOf(infoButton1));
+
+            new Actions(driver).moveToElement(infoButton1).click().perform();
+
+            // JavaScript Executor oluştur
+            JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+
+            wait.until(ExpectedConditions.visibilityOf(closeButton1));
+
+            List<String> extractedValues = new ArrayList<>();
+
+            // document.body.innerText değerini al ve String değişkene ata
+            String pageText = (String) jsExecutor.executeScript("return document.body.innerText;");
+
+            // Sonucu yazdır
+            // Regex ile ilgili kısmı çek
+            String regex = "Kaufpreis\\*:\\s*(.*?)\\s*Euro\\s*" +
+            "Nettodarlehensbetrag:\\s*(.*?)\\s*Euro\\s*" +
+            "Verwendungszweck:\\s*(.*?)\\s*" +
+            "Sollzinsbindung:\\s*(.*?)\\s*" +
+            "gebundener Sollzins p.a.:\\s*(.*?)\\s*%\\s*" +
+            "effektiver Jahreszins:\\s*(.*?)\\s*%\\s*" +
+            "Tilgung p.a.:\\s*(.*?)\\s*%\\s*" +
+            "monatliche Rate:\\s*(.*?)\\s*Euro\\s*" +
+            "voraussichtliche Restschuld bei Ablauf der Sollzinsbindung:\\s*(.*?)\\s*Euro\\s*" +
+            "Anzahl Raten Zinsbindung:\\s*(.*?)\\s*" +
+            "Anzahl Raten Gesamtlaufzeit \\(bei gleichem Anschlusszins\\):\\s*(.*?)\\s*" +
+            "Vertragslaufzeit:\\s*(.*?)\\s*" +
+            "Gesamtbetrag der Finanzierung:\\s*(.*?)\\s*Euro";
+
+
+            Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+
+            Matcher matcher = pattern.matcher(pageText);
+            Map<String, String> loanDetails = new HashMap<>();
+            
+            if (matcher.find()) { 
+                try {
+                    loanDetails.put("Kaufpreis*", matcher.group(1));
+                    loanDetails.put("Nettodarlehensbetrag", matcher.group(2));
+                    loanDetails.put("Verwendungszweck", matcher.group(3));
+                    loanDetails.put("Sollzinsbindung", matcher.group(4));
+                    loanDetails.put("gebundener Sollzins p.a.", matcher.group(5) + " %");
+                    loanDetails.put("effektiver Jahreszins", matcher.group(6) + " %");
+                    loanDetails.put("Tilgung p.a.", matcher.group(7) + " %");
+                    loanDetails.put("monatliche Rate", matcher.group(8));
+                    loanDetails.put("voraussichtliche Restschuld bei Ablauf der Sollzinsbindung", matcher.group(9));
+                    loanDetails.put("Anzahl Raten Zinsbindung", matcher.group(10));
+                    loanDetails.put("Anzahl Raten Gesamtlaufzeit (bei gleichem Anschlusszins)", matcher.group(11));
+                    loanDetails.put("Vertragslaufzeit", matcher.group(12));
+                    loanDetails.put("Gesamtbetrag der Finanzierung", matcher.group(13));
+            
+                    // Sonucu ekrana yazdır
+                    for (Map.Entry<String, String> entry : loanDetails.entrySet()) {
+                        //System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+
+                        String key = entry.getKey();
+                        String value = entry.getValue();
+                
+                        if (key.contains("Tilgung p.a.")) {  // Faiz oranı için
+                            value = value.replace(",00 %", "");
+                            extractedValues.add(value);
+                            logger.info("Tilgung p.a.: {}", value);
+                        } else if (key.contains("Nettodarlehensbetrag")) { // Fiyatlar için
+                            value = value.replace(",00", "").replace(".", "");
+                            extractedValues.add(value);
+                            logger.info("Nettodarlehensbetrag: {}", value);
+                        } else if (key.contains("Verwendungszweck")) {
+                            //value = value.replace(",00 Euro", "");
+                            extractedValues.add(value);
+                            logger.info("Verwendungszweck: {}", value);
+                        } else if (key.contains("Kaufpreis*")) {
+                            value = value.replace(",00", "").replace(".", "");
+                            extractedValues.add(value);
+                            logger.info("Kaufpreis*: {}", value);
+                        }
+                
+                        //extractedValues.add(value);
+
+                    }
+                } catch (IndexOutOfBoundsException e) {
+                    System.out.println("Hata: Eşleşme grupları eksik! Regex doğru çalışmıyor.");
+                }
+            } else {
+                System.out.println("İstenen veri bulunamadı!");
+            }
+            
+
+            new Actions(driver).moveToElement(closeButton1).click().perform();
+            
+            boolean allValuesMatch = true;
+
+            // Parametrelerin listede olup olmadığını kontrol et
+            for (String param : params) {
+                if (!extractedValues.contains(param)) {
+                    allValuesMatch = false;
+                    logger.warn("Missing parameter: {}", param);
+                    return allValuesMatch;  // En az bir parametre eksikse false
+                }
+
+                logger.info("Parameter value: {}", param);
+            }
+
+            extractedValues.stream().forEach(System.out::println);
+
+            
+            return allValuesMatch;
+        } catch (Exception e) {
+            logger.error("Error verifying calculator values for Tilgung payment type: {}", e.getMessage());
+            throw e;
+        }
+
+    }
+
+
+    public boolean verifyingCalculatorValuesForTilgungPaymentTypeInSecondModal
+    (String randomPurchasePrice, String... params) {
+
+        try {
+            
+            WebElement infoButton2 = driver.findElement(By.xpath("//*[@id='detailsAnzeigenSollzinsbindung1']"));
+            WebElement closeButton2 = driver.findElement(By.xpath("//*[@id='angebotDetailModal1']/div/div/div[1]/div[2]/button"));
+            WebElement infoButton3 = driver.findElement(By.xpath("//*[@id='detailsAnzeigenSollzinsbindung2']"));
+            WebElement closeButton3 = driver.findElement(By.xpath("//*[@id='angebotDetailModal2']/div/div/div[1]/div[2]/button"));
+            WebElement infoButton4 = driver.findElement(By.xpath("//*[@id='detailsAnzeigenSollzinsbindung3']"));
+            WebElement closeButton4 = driver.findElement(By.xpath("//*[@id='angebotDetailModal3']/div/div/div[1]/div[2]/button"));
+            
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+            wait.until(ExpectedConditions.visibilityOf(infoButton2));
+
+            new Actions(driver).moveToElement(infoButton2).click().perform();
+
+            // JavaScript Executor oluştur
+            JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+
+            wait.until(ExpectedConditions.visibilityOf(closeButton2));
+
+            List<String> extractedValues = new ArrayList<>();
+
+            // document.body.innerText değerini al ve String değişkene ata
+            String pageText = (String) jsExecutor.executeScript("return document.body.innerText;");
+
+            // Sonucu yazdır
+            // Regex ile ilgili kısmı çek
+            String regex = "Kaufpreis\\*:\\s*(.*?)\\s*Euro\\s*" +
+            "Nettodarlehensbetrag:\\s*(.*?)\\s*Euro\\s*" +
+            "Verwendungszweck:\\s*(.*?)\\s*" +
+            "Sollzinsbindung:\\s*(.*?)\\s*" +
+            "gebundener Sollzins p.a.:\\s*(.*?)\\s*%\\s*" +
+            "effektiver Jahreszins:\\s*(.*?)\\s*%\\s*" +
+            "Tilgung p.a.:\\s*(.*?)\\s*%\\s*" +
+            "monatliche Rate:\\s*(.*?)\\s*Euro\\s*" +
+            "voraussichtliche Restschuld bei Ablauf der Sollzinsbindung:\\s*(.*?)\\s*Euro\\s*" +
+            "Anzahl Raten Zinsbindung:\\s*(.*?)\\s*" +
+            "Anzahl Raten Gesamtlaufzeit \\(bei gleichem Anschlusszins\\):\\s*(.*?)\\s*" +
+            "Vertragslaufzeit:\\s*(.*?)\\s*" +
+            "Gesamtbetrag der Finanzierung:\\s*(.*?)\\s*Euro";
+
+
+            Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+
+            Matcher matcher = pattern.matcher(pageText);
+            Map<String, String> loanDetails = new HashMap<>();
+            
+            if (matcher.find()) { 
+                try {
+                    loanDetails.put("Kaufpreis*", matcher.group(1));
+                    loanDetails.put("Nettodarlehensbetrag", matcher.group(2));
+                    loanDetails.put("Verwendungszweck", matcher.group(3));
+                    loanDetails.put("Sollzinsbindung", matcher.group(4));
+                    loanDetails.put("gebundener Sollzins p.a.", matcher.group(5) + " %");
+                    loanDetails.put("effektiver Jahreszins", matcher.group(6) + " %");
+                    loanDetails.put("Tilgung p.a.", matcher.group(7) + " %");
+                    loanDetails.put("monatliche Rate", matcher.group(8));
+                    loanDetails.put("voraussichtliche Restschuld bei Ablauf der Sollzinsbindung", matcher.group(9));
+                    loanDetails.put("Anzahl Raten Zinsbindung", matcher.group(10));
+                    loanDetails.put("Anzahl Raten Gesamtlaufzeit (bei gleichem Anschlusszins)", matcher.group(11));
+                    loanDetails.put("Vertragslaufzeit", matcher.group(12));
+                    loanDetails.put("Gesamtbetrag der Finanzierung", matcher.group(13));
+            
+                    // Sonucu ekrana yazdır
+                    for (Map.Entry<String, String> entry : loanDetails.entrySet()) {
+                        //System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+
+                        String key = entry.getKey();
+                        String value = entry.getValue();
+                
+                        if (key.contains("Tilgung p.a.")) {  // Faiz oranı için
+                            value = value.replace(",00 %", "");
+                            extractedValues.add(value);
+                            logger.info("Tilgung p.a.: {}", value);
+                        } else if (key.contains("Nettodarlehensbetrag")) { // Fiyatlar için
+                            value = value.replace(",00", "").replace(".", "");
+                            extractedValues.add(value);
+                            logger.info("Nettodarlehensbetrag: {}", value);
+                        } else if (key.contains("Verwendungszweck")) {
+                            //value = value.replace(",00 Euro", "");
+                            extractedValues.add(value);
+                            logger.info("Verwendungszweck: {}", value);
+                        } else if (key.contains("Kaufpreis*")) {
+                            value = value.replace(",00", "").replace(".", "");
+                            extractedValues.add(value);
+                            logger.info("Kaufpreis*: {}", value);
+                        }
+                
+                        //extractedValues.add(value);
+
+                    }
+                } catch (IndexOutOfBoundsException e) {
+                    System.out.println("Hata: Eşleşme grupları eksik! Regex doğru çalışmıyor.");
+                }
+            } else {
+                System.out.println("İstenen veri bulunamadı!");
+            }
+            
+
+            new Actions(driver).moveToElement(closeButton2).click().perform();
+            
+            boolean allValuesMatch = true;
+
+            // Parametrelerin listede olup olmadığını kontrol et
+            for (String param : params) {
+                if (!extractedValues.contains(param)) {
+                    allValuesMatch = false;
+                    logger.warn("Missing parameter: {}", param);
+                    return allValuesMatch;  // En az bir parametre eksikse false
+                }
+
+                logger.info("Parameter value: {}", param);
+            }
+
+            extractedValues.stream().forEach(System.out::println);
+
+            
+            return allValuesMatch;
+        } catch (Exception e) {
+            logger.error("Error verifying calculator values for Tilgung payment type: {}", e.getMessage());
+            throw e;
+        }
+
+    }
+
+    public boolean verifyingCalculatorValuesForTilgungPaymentTypeInFourthModal
+    (String... params) {
+
+        try {
+            WebElement infoButton4 = driver.findElement(By.xpath("//*[@id='detailsAnzeigenSollzinsbindung3']"));
+            WebElement closeButton4 = driver.findElement(By.xpath("//*[@id='angebotDetailModal3']/div/div/div[1]/div[2]/button"));
+            
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+            wait.until(ExpectedConditions.visibilityOf(infoButton4));
+
+            new Actions(driver).moveToElement(infoButton4).click().perform();
+
+            // JavaScript Executor oluştur
+            JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+
+            wait.until(ExpectedConditions.visibilityOf(closeButton4));
+
+            List<String> extractedValues = new ArrayList<>();
+            List<WebElement> offerNumbers = driver.findElements(By.cssSelector("[id^=details-berechnung]"));
+            
+
+            // document.body.innerText değerini al ve String değişkene ata
+            //String pageText = (String) jsExecutor.executeScript(    "return document.body.innerText;");
+            //String elementText = (String) jsExecutor.executeScript("return document.all('#details-berechnung3').innerText;");
+            String elementText = "return Array.from(document.querySelectorAll('[id^=details-berechnung] .text-right')).map(element => element.innerText)";
+
+            extractedValues = (List<String>) jsExecutor.executeScript(elementText);
+            
+
+            logger.info("params[0]: {}", params[0]);
+            logger.info("params[1]: {}", params[1]);
+            logger.info("params[2]: {}", params[2]);
+            logger.info("offerNumbers: {}", offerNumbers.size());
+
+/*
+            List<String> textValuesForJsoup = new ArrayList<>();
+            String html = "#details-berechnung3 > div.card-body";
+            Document doc = Jsoup.parse(html);
+            Elements elements = doc.select(".text-right");
+
+            for(Element element : elements) {
+
+                String text = element.ownText().trim();
+                if(!text.isEmpty()) {
+
+                    textValuesForJsoup.add(text);
+                    logger.info("Text: {}", text);
+                }
+
+            }
+
+            textValuesForJsoup.forEach(System.out::println);
+*/
+
+
+            List<String> processedValues = extractedValues.stream()
+                .map(element -> element.contains(".") ? element.replace(".", "") : element)
+                .map(element -> element.contains(",") ? element.substring(0, element.indexOf(",")) : element)
+                .collect(Collectors.toList());
+
+            boolean allParametersMatch = Arrays.stream(params)
+                .allMatch(param -> 
+                    processedValues.stream()
+                        .filter(element -> param.equals(element))
+                        .count() >= offerNumbers.size());
+
+            return allParametersMatch;
+        }
+        catch (Exception e) {
+            logger.error("Error verifying calculator values for Tilgung payment type: {}", e.getMessage());
+            throw e;
+        }   
+
+    }
+
+
+    public boolean verifyingCalculatorValuesForMonatlicheRatePaymentType
+    (String randomPurchasePrice, String randomLoanAmount, String randomPurpose, String randomMonthlyPayment) {
+
+        try {
+        // Log stored values for debugging
+        logger.info("Stored values:");
+        logger.info("Purchase price: {}", randomPurchasePrice);
+        logger.info("Loan amount: {}", randomLoanAmount);
+        logger.info("Purpose: {}", randomPurpose);
+        logger.info("Monthly payment: {}", randomMonthlyPayment);
+
+        // Create map of expected values
+        Map<String, String> expectedValues = new HashMap<>();
+        expectedValues.put("Kaufpreis*:", randomPurchasePrice);
+        expectedValues.put("Nettodarlehensbetrag:", randomLoanAmount);
+        expectedValues.put("Verwendungszweck:", randomPurpose);
+        // Don't check monthly payment as it might be recalculated with interest
+        // expectedValues.put("monatliche Rate:", randomMonthlyPayment);
+
+        // Verify values across all info buttons
+        boolean allValuesMatch = verifyAllDetailsValues(expectedValues);
+
+        logger.info("All values matched: {}", allValuesMatch);
+        new Actions(Driver.getDriver()).sendKeys(Keys.ESCAPE).perform();
+
+        return allValuesMatch;
+        } catch (Exception e) {
+            logger.error("Error verifying calculator values for Monatliche Rate payment type: {}", e.getMessage());
+            throw e;
+        }   
+    }
+
+
+    public boolean verifyingCalculatorValuesForGesamtbetragPaymentType
+    (String randomPurchasePrice, String randomLoanAmount, String randomPurpose, String randomJahreFürGesamtlaufzeit, String randomMonateFürGesamtlaufzeit) {
+
+        try {
+
+            String totalTerm = randomJahreFürGesamtlaufzeit + " Jahre " + randomMonateFürGesamtlaufzeit + " Monate";
+            // Log stored values for debugging
+            logger.info("Stored values:");
+            logger.info("Purchase price: {}", randomPurchasePrice);
+            logger.info("Loan amount: {}", randomLoanAmount);
+            logger.info("Purpose: {}", randomPurpose);
+            logger.info("Total term: {}", totalTerm);
+            
+            // Create map of expected values
+            Map<String, String> expectedValues = new HashMap<>();
+            expectedValues.put("Kaufpreis*:", randomPurchasePrice);
+            expectedValues.put("Nettodarlehensbetrag:", randomLoanAmount);
+            expectedValues.put("Verwendungszweck:", randomPurpose);
+            expectedValues.put("Vertragslaufzeit:", totalTerm); //Create a static variable for totalTerm 
+            // Note: We don't verify the total term as it might be formatted differently in the modal
+    
+            // Verify values across all info buttons
+            boolean allValuesMatch = verifyAllDetailsValues(expectedValues);
+    
+            logger.info("All values matched: {}", allValuesMatch);
+            new Actions(Driver.getDriver()).sendKeys(Keys.ESCAPE).perform();
+            
+            if (!allValuesMatch) {
+                throw new AssertionError("Not all values matched across info buttons. Check logs for details.");
+            }
+
+            return allValuesMatch;
+
+        } catch (Exception e) {
+            logger.error("Error verifying calculator values for Gesamtbetrag payment type: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+
 
     private String normalizeNumber(String value) {
         if (value == null) return null;
@@ -1008,6 +1459,8 @@ public class OfferSelectionPage extends BasePage {
         WebElement zurueckButton = Driver.getDriver().findElement(By.id("sollzinsbindungen-zurück-button"));
 
         try {
+            logger.info("Clicking back button to return to Finanzierung page");
+
             zurueckButton.click();
             logger.info("Successfully clicked back button in offer selection page");
         } catch (Exception e) {
@@ -1016,5 +1469,110 @@ public class OfferSelectionPage extends BasePage {
         }
         logger.info("Clicking back button to return to 	Angaben zum Finanzierungswunsch page");
     }
+
+
+    public boolean verifySelectedOption(String randomOption) {
+
+        logger.info("Verifying selected option persistence");
+        logger.info("Selected option number: {}", randomOption);
+        
+        try {
+            boolean isSelectedOptionVerified = false;
+            // Wait for page to load after navigation
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(20));
+            
+            // Try multiple selectors to find the offer container
+            String[] possibleSelectors = {
+                ".panel-card-button", 
+                ".offer-container", 
+                ".offer-selection-container",
+                "[data-testid='offer-container']",
+                "table.offer-table"
+            };
+            
+            boolean foundElement = false;
+            for (String selector : possibleSelectors) {
+                try {
+                    logger.info("Trying to locate offer element with selector: {}", selector);
+                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(selector)));
+                    logger.info("Successfully found element with selector: {}", selector);
+                    foundElement = true;
+                    break;
+                } catch (Exception e) {
+                    logger.info("Could not find element with selector: {}", selector);
+                }
+            }
+            
+            if (!foundElement) {
+                logger.error("Could not find any offer container element");
+                Utils.takeScreenshot(Driver.getDriver(), "offer-container-not-found");
+                throw new AssertionError("Could not find any offer container element after navigation");
+            }
+            
+            // Execute JavaScript to check for radio button selection
+            JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
+            
+            // Simple script to find selected option
+            String simpleScript = 
+                "var options = document.querySelectorAll('.panel-card-button');" +
+                "var result = null;" +
+                "for (var i = 0; i < options.length; i++) {" +
+                "  var option = options[i];" +
+                "  var showChosen = option.querySelector('.hidden-unforced.show-chosen');" +
+                "  if (showChosen && (window.getComputedStyle(showChosen).display !== 'none')) {" +
+                "    result = {" +
+                "      index: i + 1," +
+                "      hasShownChosen: true," +
+                "      displayValue: window.getComputedStyle(showChosen).display," +
+                "      elementId: option.id || 'no-id'" +
+                "    };" +
+                "    break;" +
+                "  }" +
+                "}" +
+                "return result;";
+            
+            Map<String, Object> result = (Map<String, Object>) js.executeScript(simpleScript);
+            
+            // Print all keys and values from the map for debugging
+            logger.info("JavaScript result map contents:");
+            if (result != null) {
+                for (Map.Entry<String, Object> entry : result.entrySet()) {
+                    logger.info("  {} = {}", entry.getKey(), entry.getValue());
+                }
+                
+                int selectedIndex = ((Long) result.get("index")).intValue();
+                logger.info("Found selected option at index: {}", selectedIndex);
+                
+                // Verify if this matches our expected selection
+                //Assertions.assertEquals(Integer.parseInt(randomOption), selectedIndex,
+                //    "Selected option does not match the expected option");
+                if (Integer.parseInt(randomOption) == selectedIndex) {
+                    isSelectedOptionVerified = true;
+                }
+                
+                logger.info("Successfully verified selected option persistence");
+            } else {
+                // Try a direct class-based check without computed style
+                String directCheckScript = 
+                    "var options = document.querySelectorAll('.panel-card-button');" +
+                    "return options.length;";
+                
+                Long optionsCount = (Long) js.executeScript(directCheckScript);
+                logger.info("Found {} panel-card-button elements", optionsCount);
+                
+                // Take screenshot for debugging
+                Utils.takeScreenshot(Driver.getDriver(), "no-selected-option");
+                logger.error("No selected option found. Number of options: {}", optionsCount);
+                
+                throw new AssertionError("No selected option found among " + optionsCount + " options");
+            }
+
+            return isSelectedOptionVerified;
+        } catch (Exception e) {
+            logger.error("Failed to verify selected option persistence: {}", e.getMessage());
+            Utils.takeScreenshot(Driver.getDriver(), "option-verification-failure");
+            throw e;
+        }
+    }   
 
 } 

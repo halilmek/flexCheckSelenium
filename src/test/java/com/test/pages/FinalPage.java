@@ -144,8 +144,10 @@ public class FinalPage extends BasePage {
         return messageFound;
     }
 
-    public void clickBackButtonnFinalPage() {
+    public void clickBackButtonOnFinalPage() {
         try {
+            logger.info("Clicking back button to return to upload page");
+
             // Wait for the page to be fully loaded
             wait.until(ExpectedConditions.presenceOfElementLocated(By.tagName("body")));
             
@@ -298,6 +300,7 @@ public class FinalPage extends BasePage {
 
     public boolean getEnteredMessageInFinalPage() {
         try {
+            logger.info("Verifying message text persistence");
             // Wait for the message text area to be present
             wait.until(ExpectedConditions.presenceOfElementLocated(By.id("informationen")));
             
@@ -317,7 +320,9 @@ public class FinalPage extends BasePage {
             Utils.takeScreenshot(driver, "message-verification");
             
             // Return true if messages match
-            return expectedMessage.equals(textAreaValue);
+            boolean result = expectedMessage.equals(textAreaValue);
+            logger.info("Message verification result: {}", result);
+            return result;
         } catch (Exception e) {
             logger.error("Failed to verify message in final page: {}", e.getMessage());
             Utils.takeScreenshot(driver, "message-verification-error");

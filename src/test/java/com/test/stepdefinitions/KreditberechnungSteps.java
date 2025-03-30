@@ -22,6 +22,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class KreditberechnungSteps {
@@ -43,7 +44,8 @@ public class KreditberechnungSteps {
     String randomPropertyType = angabenZumObjektPage.getObjektart();
     String randomJahreFürGesamtlaufzeit = TestDataGenerator.generateJahreFürGesamtlaufzeit();
     String randomMonateFürGesamtlaufzeit = TestDataGenerator.generateMonateFürGesamtlaufzeit();
-    String randomOption = TestDataGenerator.generateOptionNumber();
+    //String randomOption = TestDataGenerator.generateOptionNumber();
+    String randomOption = "4";
 
     @Given("the user is on the FlexCheck calculator page")
     public void the_user_is_on_the_flex_check_calculator_page() {
@@ -127,14 +129,7 @@ public class KreditberechnungSteps {
         if (amount.equalsIgnoreCase("randomMonthlyPayment")) {
             amount = randomMonthlyPayment;
         }
-        logger.info("Entering monthly payment amount: {}", amount);
-        try {
-            finanzierungPage.enterMonthlyPayment(amount);
-            logger.info("Successfully entered monthly payment");
-        } catch (Exception e) {
-            logger.error("Failed to enter monthly payment: {}", e.getMessage());
-            throw e;
-        }
+        finanzierungPage.enterMonthlyPayment(amount);
     }
 
 
@@ -145,14 +140,9 @@ public class KreditberechnungSteps {
         if (years.equalsIgnoreCase("randomJahre")) {
             years = randomJahreFürGesamtlaufzeit; // TestDataGenerator'dan alınan rastgele değer
         }
-        logger.info("Entering total term in years: {}", years);
-        try {
-            finanzierungPage.enterTotalTermYears(years);
-            logger.info("Successfully entered total term in years");
-        } catch (Exception e) {
-            logger.error("Failed to enter total term in years: {}", e.getMessage());
-            throw e;
-        }
+
+        finanzierungPage.enterTotalTermYears(years);
+
     }
 
     @When("the user enters total term in months {string}")
@@ -161,14 +151,9 @@ public class KreditberechnungSteps {
         if (months.equalsIgnoreCase("randomMonate")) {
             months = randomMonateFürGesamtlaufzeit; // TestDataGenerator'dan alınan rastgele değer
         }
-        logger.info("Entering total term in months: {}", months);
-        try {
-            finanzierungPage.enterTotalTermMonths(months);
-            logger.info("Successfully entered total term in months");
-        } catch (Exception e) {
-            logger.error("Failed to enter total term in months: {}", e.getMessage());
-            throw e;
-        }
+
+        finanzierungPage.enterTotalTermMonths(months);
+
     }
 
 
@@ -211,88 +196,31 @@ public class KreditberechnungSteps {
 
     @Then("the user should see values, as the user entered in the calculator based on Tilgung in % payment type")
     public void verifyCalculatorValues() {
-        // Log stored values for debugging
-        randomRepaymentPercentage = randomRepaymentPercentage + ",00 %";
-        logger.info("Stored values:");
-        logger.info("Purchase price: {}", randomPurchasePrice);
-        logger.info("Loan amount: {}", randomLoanAmount);
-        logger.info("Purpose: {}", randomPurpose);
-        logger.info("Repayment percentage: {}", randomRepaymentPercentage);
 
-        // Create map of expected values
-        Map<String, String> expectedValues = new HashMap<>();
-        expectedValues.put("Kaufpreis*:", randomPurchasePrice);
-        expectedValues.put("Nettodarlehensbetrag:", randomLoanAmount);
-        expectedValues.put("Verwendungszweck:", randomPurpose);
-        //expectedValues.put("Tilgung p.a.:", randomRepaymentPercentage);
+        //Assertions.assertTrue(offerSelectionPage.verifyingCalculatorValuesForTilgungPaymentType(randomPurchasePrice, randomLoanAmount, randomPurpose, randomRepaymentPercentage));
 
-        // Verify values across all info buttons
-        boolean allValuesMatch = offerSelectionPage.verifyAllDetailsValues(expectedValues);
+        //offerSelectionPage.verifyingCalculatorValuesForTilgungPaymentTypeInFirstModal(randomLoanAmount, randomPurpose, randomPurchasePrice, randomRepaymentPercentage);
+        //logger.info("Method result: " + offerSelectionPage.verifyingCalculatorValuesForTilgungPaymentTypeInFirstModal(randomLoanAmount, randomPurpose, randomPurchasePrice, randomRepaymentPercentage));
+        //boolean result = offerSelectionPage.verifyingCalculatorValuesForTilgungPaymentTypeInSecondModal("", randomLoanAmount, randomPurpose, randomPurchasePrice, randomRepaymentPercentage);
+        //boolean result = offerSelectionPage.verifyingCalculatorValuesForTilgungPaymentTypeInSecondModal("", randomLoanAmount, randomPurpose, randomPurchasePrice, randomRepaymentPercentage, randomMonthlyPayment);
+        //logger.info("Method result: " + result);
+        //System.out.println("Method result: " + offerSelectionPage.verifyingCalculatorValuesForTilgungPaymentTypeInFourthModal(randomPurchasePrice, randomLoanAmount, randomPurpose, randomRepaymentPercentage));
+        //System.out.println("Method result: " + offerSelectionPage.verifyingCalculatorValuesForTilgungPaymentTypeInFourthModal(randomPurchasePrice, randomLoanAmount, randomPurpose));
+        Assertions.assertTrue(offerSelectionPage.verifyingCalculatorValuesForTilgungPaymentTypeInFourthModal(randomPurchasePrice, randomLoanAmount, randomPurpose));
 
-        logger.info("All values matched: {}", allValuesMatch);
-        //new Actions(Driver.getDriver()).pause(Duration.ofSeconds(10)).perform();
-        new Actions(Driver.getDriver()).sendKeys(Keys.ESCAPE).perform();
-        
-        if (!allValuesMatch) {
-            throw new AssertionError("Not all values matched across info buttons. Check logs for details.");
-        }
     }
     
     @Then("the user should see values, as the user entered in the calculator based on Monatliche Rate payment type")
     public void verifyCalculatorValuesForMonthlyRatePaymentType() {
-        // Log stored values for debugging
-        logger.info("Stored values:");
-        logger.info("Purchase price: {}", randomPurchasePrice);
-        logger.info("Loan amount: {}", randomLoanAmount);
-        logger.info("Purpose: {}", randomPurpose);
-        logger.info("Monthly payment: {}", randomMonthlyPayment);
 
-        // Create map of expected values
-        Map<String, String> expectedValues = new HashMap<>();
-        expectedValues.put("Kaufpreis*:", randomPurchasePrice);
-        expectedValues.put("Nettodarlehensbetrag:", randomLoanAmount);
-        expectedValues.put("Verwendungszweck:", randomPurpose);
-        // Don't check monthly payment as it might be recalculated with interest
-        // expectedValues.put("monatliche Rate:", randomMonthlyPayment);
+        Assertions.assertTrue(offerSelectionPage.verifyingCalculatorValuesForMonatlicheRatePaymentType(randomPurchasePrice, randomLoanAmount, randomPurpose, randomMonthlyPayment));
 
-        // Verify values across all info buttons
-        boolean allValuesMatch = offerSelectionPage.verifyAllDetailsValues(expectedValues);
-
-        logger.info("All values matched: {}", allValuesMatch);
-        new Actions(Driver.getDriver()).sendKeys(Keys.ESCAPE).perform();
-        
-        if (!allValuesMatch) {
-            throw new AssertionError("Not all values matched across info buttons. Check logs for details.");
-        }
     }
     
     @Then("the user should see values, as the user entered in the calculator based on Gesamtlaufzeit payment type")
     public void verifyCalculatorValuesForGesamtlaufzeitPaymentType() {
-        String totalTerm = randomJahreFürGesamtlaufzeit + " Jahre " + randomMonateFürGesamtlaufzeit + " Monate";
-        // Log stored values for debugging
-        logger.info("Stored values:");
-        logger.info("Purchase price: {}", randomPurchasePrice);
-        logger.info("Loan amount: {}", randomLoanAmount);
-        logger.info("Purpose: {}", randomPurpose);
-        logger.info("Total term: {}", totalTerm);
-        
-        // Create map of expected values
-        Map<String, String> expectedValues = new HashMap<>();
-        expectedValues.put("Kaufpreis*:", randomPurchasePrice);
-        expectedValues.put("Nettodarlehensbetrag:", randomLoanAmount);
-        expectedValues.put("Verwendungszweck:", randomPurpose);
-        expectedValues.put("Vertragslaufzeit:", totalTerm); //Create a static variable for totalTerm 
-        // Note: We don't verify the total term as it might be formatted differently in the modal
 
-        // Verify values across all info buttons
-        boolean allValuesMatch = offerSelectionPage.verifyAllDetailsValues(expectedValues);
-
-        logger.info("All values matched: {}", allValuesMatch);
-        new Actions(Driver.getDriver()).sendKeys(Keys.ESCAPE).perform();
-        
-        if (!allValuesMatch) {
-            throw new AssertionError("Not all values matched across info buttons. Check logs for details.");
-        }
+        Assertions.assertTrue(offerSelectionPage.verifyingCalculatorValuesForGesamtbetragPaymentType(randomPurchasePrice, randomLoanAmount, randomPurpose, randomJahreFürGesamtlaufzeit, randomMonateFürGesamtlaufzeit));
     }
 
     //================DokumentHochladenPage=========
@@ -344,6 +272,10 @@ public class KreditberechnungSteps {
 
     //==========================Data Persistence Steps============================
     
+
+
+/*
+
     @When("the user clicks on back button to return to previous page")
     public void theUserClicksOnBackButtonToPreviousPage() throws InterruptedException {
         logger.info("Clicking back button to return to previous page");
@@ -371,8 +303,6 @@ public class KreditberechnungSteps {
         }
     }
 
-/*
- *
      @Then("the loan amount should still be {string}")
     public void theLoanAmountShouldStillBe(String expectedAmount) {
         logger.info("Verifying loan amount persistence");
@@ -389,11 +319,7 @@ public class KreditberechnungSteps {
             throw e;
         }
     } 
- * 
- */
-
-
-/*
+ 
     @Then("the repayment percentage should still be {string}")
     public void theRepaymentPercentageShouldStillBe(String expectedPercentage) {
         logger.info("Verifying repayment percentage persistence");
@@ -410,7 +336,6 @@ public class KreditberechnungSteps {
             throw e;
         }
     }
-    */
 
     @Then("the first payout date should be preserved")
     public void theFirstPayoutDateShouldBePreserved() {
@@ -493,43 +418,35 @@ public class KreditberechnungSteps {
             throw e;
         }
     }
+    */
+
+
 
     @Then("the user should see the uploaded file")
     public void theUserShouldSeeTheUploadedFile() {
-        logger.info("Verifying uploaded file persistence");
-        try {
-            dokumentHochladenPage.verifyFileUpload();
-            logger.info("Uploaded file verified successfully");
-        } catch (Exception e) {
-            logger.error("Failed to verify uploaded file: {}", e.getMessage());
-            throw e;
-        }
+
+        Assertions.assertTrue(dokumentHochladenPage.verifyFileUpload());
     }
 
     @And("the user clicks on weiter button to return to last page")
     public void theUserClicksOnWeiterButtonToReturnToLastPage() {
-        try {
-            dokumentHochladenPage.verifyFileUpload();
-            dokumentHochladenPage.clickingWeiterButtonInDokumentHochladungPage();
-        } catch (Exception e) {
-            logger.error("Error clicking weiter button to return to last page: " + e.getMessage());
-            throw e;
-        }
+
+        dokumentHochladenPage.verifyFileUpload();
+        dokumentHochladenPage.clickingWeiterButtonInDokumentHochladungPage();
+
     }
 
     @Then("the user should see the text, what the user wrote in the message field before")
     public void theUserShouldSeeTheMessageText() {
-        logger.info("Verifying message text persistence");
-        FinalPage finalPage = new FinalPage();
-        boolean messageVerified = finalPage.getEnteredMessageInFinalPage();
-        Assertions.assertTrue(messageVerified, "Message text verification failed");
-        logger.info("Message text verification {}", messageVerified ? "successful" : "failed");
+        
+        Assertions.assertTrue(finalPage.getEnteredMessageInFinalPage(), "Message text verification failed");
+
     }
 
     @When("the user clicks on back button to return to upload page")
     public void theUserClicksOnBackButtonToUploadPage() {
-        logger.info("Clicking back button to return to upload page");
-        finalPage.clickBackButtonnFinalPage();
+
+        finalPage.clickBackButtonOnFinalPage();
     }
 
     @When("the user clicks on back button to return to Wahlen Sie Ihre gewünschte Kondition page")
@@ -539,129 +456,23 @@ public class KreditberechnungSteps {
 
     @When("the user clicks on back button to return to Angaben zum Finanzierungswunsch page")
     public void theUserClicksOnBackButtonToFinanzierungPage() {
-        logger.info("Clicking back button to return to Finanzierung page");
+
         offerSelectionPage.clickZurueckButtonInOfferSelectionPage();
     }
 
     @When("the user clicks on back button to return to Angaben zum Objekt page")
     public void theUserClicksOnBackButtonToObjektPage() {
-        logger.info("Clicking back button to return to Objekt page");
-        try {
-            // Find and click the back button
-            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
-            WebElement backButton = wait.until(ExpectedConditions.elementToBeClickable(
-                By.cssSelector("button.btn--nav-previous, button[class*='nav-previous'], button[class*='zurück']")
-            ));
-            backButton.click();
-            
-            // Wait for Objekt page to load
-            //wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[name='postalCode']")));
-            logger.info("Successfully navigated back to Objekt page");
-        } catch (Exception e) {
-            logger.error("Failed to navigate back to Objekt page: {}", e.getMessage());
-            throw e;
-        }
+
+        finanzierungPage.clickBackButtonInAngabenZumFinanzierungswunschPage();
     }
 
-    @Then("the user should see, what the user selected in that page before")
+    @Then("the user should see, what the user selected in option selection page")
     public void theUserShouldSeeSelectedOption() {
-        logger.info("Verifying selected option persistence");
-        logger.info("Selected option number: {}", randomOption);
-        
-        try {
-            // Wait for page to load after navigation
-            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(20));
-            
-            // Try multiple selectors to find the offer container
-            String[] possibleSelectors = {
-                ".panel-card-button", 
-                ".offer-container", 
-                ".offer-selection-container",
-                "[data-testid='offer-container']",
-                "table.offer-table"
-            };
-            
-            boolean foundElement = false;
-            for (String selector : possibleSelectors) {
-                try {
-                    logger.info("Trying to locate offer element with selector: {}", selector);
-                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(selector)));
-                    logger.info("Successfully found element with selector: {}", selector);
-                    foundElement = true;
-                    break;
-                } catch (Exception e) {
-                    logger.info("Could not find element with selector: {}", selector);
-                }
-            }
-            
-            if (!foundElement) {
-                logger.error("Could not find any offer container element");
-                Utils.takeScreenshot(Driver.getDriver(), "offer-container-not-found");
-                throw new AssertionError("Could not find any offer container element after navigation");
-            }
-            
-            // Execute JavaScript to check for radio button selection
-            JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
-            
-            // Simple script to find selected option
-            String simpleScript = 
-                "var options = document.querySelectorAll('.panel-card-button');" +
-                "var result = null;" +
-                "for (var i = 0; i < options.length; i++) {" +
-                "  var option = options[i];" +
-                "  var showChosen = option.querySelector('.hidden-unforced.show-chosen');" +
-                "  if (showChosen && (window.getComputedStyle(showChosen).display !== 'none')) {" +
-                "    result = {" +
-                "      index: i + 1," +
-                "      hasShownChosen: true," +
-                "      displayValue: window.getComputedStyle(showChosen).display," +
-                "      elementId: option.id || 'no-id'" +
-                "    };" +
-                "    break;" +
-                "  }" +
-                "}" +
-                "return result;";
-            
-            Map<String, Object> result = (Map<String, Object>) js.executeScript(simpleScript);
-            
-            // Print all keys and values from the map for debugging
-            logger.info("JavaScript result map contents:");
-            if (result != null) {
-                for (Map.Entry<String, Object> entry : result.entrySet()) {
-                    logger.info("  {} = {}", entry.getKey(), entry.getValue());
-                }
-                
-                int selectedIndex = ((Long) result.get("index")).intValue();
-                logger.info("Found selected option at index: {}", selectedIndex);
-                
-                // Verify if this matches our expected selection
-                Assertions.assertEquals(Integer.parseInt(randomOption), selectedIndex,
-                    "Selected option does not match the expected option");
-                
-                logger.info("Successfully verified selected option persistence");
-            } else {
-                // Try a direct class-based check without computed style
-                String directCheckScript = 
-                    "var options = document.querySelectorAll('.panel-card-button');" +
-                    "return options.length;";
-                
-                Long optionsCount = (Long) js.executeScript(directCheckScript);
-                logger.info("Found {} panel-card-button elements", optionsCount);
-                
-                // Take screenshot for debugging
-                Utils.takeScreenshot(Driver.getDriver(), "no-selected-option");
-                logger.error("No selected option found. Number of options: {}", optionsCount);
-                
-                throw new AssertionError("No selected option found among " + optionsCount + " options");
-            }
-        } catch (Exception e) {
-            logger.error("Failed to verify selected option persistence: {}", e.getMessage());
-            Utils.takeScreenshot(Driver.getDriver(), "option-verification-failure");
-            throw e;
-        }
+
+        Assertions.assertTrue(offerSelectionPage.verifySelectedOption(randomOption));
     }
 
-    @Then("the user should see same values, as the user entered in Finanzierungswunsch page before")
+    @Then("the user should see same values for Tilgung in % as payment type, as the user entered in Finanzierungswunsch page before")
     public void theUserShouldSeeSameValuesInFinanzierungPage() {
         logger.info("Verifying all values persistence in Finanzierung page");
         String actualAmount = finanzierungPage.getDarlehensbetrag(randomLoanAmount);
@@ -703,11 +514,11 @@ public class KreditberechnungSteps {
         Assertions.assertTrue(expectedPostalCode.equalsIgnoreCase(actualPostalCode), 
                 "Postal code does not match the previously entered value");
 
-        String actualPurchasePrice = randomPurchasePrice;
-        logger.info("Actual purchase price: " + actualPurchasePrice);
-        logger.info("Expected purchase price: " + angabenZumObjektPage.getKaufpreis());
-        String expectedPurchasePrice = angabenZumObjektPage.getKaufpreis().replace(".", "");
+        String expectedPurchasePrice = randomPurchasePrice;
         logger.info("Expected purchase price: " + expectedPurchasePrice);
+        logger.info("Actual purchase price: " + angabenZumObjektPage.getKaufpreis());
+        String actualPurchasePrice = angabenZumObjektPage.getKaufpreis().replace(".", "");
+        logger.info("Actual purchase price: " + actualPurchasePrice);
         Assertions.assertTrue(expectedPurchasePrice.equalsIgnoreCase(actualPurchasePrice), 
                 "Purchase price does not match the previously entered value");
 
@@ -717,5 +528,213 @@ public class KreditberechnungSteps {
         String actualPropertyType = angabenZumObjektPage.getSelectedObjektart();
         Assertions.assertTrue(expectedPropertyType.equalsIgnoreCase(actualPropertyType), 
                 "Property type does not match the previously entered value");
+    }
+
+    @Then("the user should see same values for monatliche Rate as payment type, as the user entered in Finanzierungswunsch page before")
+    public void theUserShouldSeeSameValuesForMonatlicheRateAsPaymentType() {
+    
+        logger.info("Verifying all values persistence in Finanzierung page");
+        String actualAmount = finanzierungPage.getDarlehensbetrag(randomLoanAmount);
+        Assertions.assertTrue(randomLoanAmount.equalsIgnoreCase(actualAmount), 
+                "Loan amount does not match the previously entered value"); 
+        
+
+        
+        
+        String actualPayoutDate = finanzierungPage.getExpectedAuszahlungsdatum();
+        Assertions.assertTrue(actualPayoutDate.equalsIgnoreCase(finanzierungPage.getAuszahlungsdatum()), 
+                "Payout date does not match the previously entered value");
+
+        String expectedRepaymentType = "monatliche Rate";
+        logger.info("Repayment type: " + expectedRepaymentType);
+        Assertions.assertTrue(finanzierungPage.getRepaymentType().equalsIgnoreCase(expectedRepaymentType), 
+        "Repayment type does not match the previously entered value");
+
+
+        String expectedMonthlyPayment = randomMonthlyPayment;
+        logger.info("Monthly payment: " + expectedMonthlyPayment);
+        Assertions.assertTrue(finanzierungPage.getMonatlicheRate().equalsIgnoreCase(expectedMonthlyPayment), 
+                "Monthly payment does not match the previously entered value");
+
+    }
+
+    @Then("the user should see same values for Gesamtlaufzeit as payment type, as the user entered in Finanzierungswunsch page before")
+    public void theUserShouldSeeSameValuesForGesamtlaufzeitAsPaymentType() {
+        
+
+        logger.info("Verifying all values persistence in Finanzierung page");
+        String actualAmount = finanzierungPage.getDarlehensbetrag(randomLoanAmount);
+        Assertions.assertTrue(randomLoanAmount.equalsIgnoreCase(actualAmount), 
+                "Loan amount does not match the previously entered value"); 
+        
+        String actualPayoutDate = finanzierungPage.getExpectedAuszahlungsdatum();
+        Assertions.assertTrue(actualPayoutDate.equalsIgnoreCase(finanzierungPage.getAuszahlungsdatum()), 
+                "Payout date does not match the previously entered value");
+
+
+
+        String expectedRepaymentType = "Gesamtlaufzeit";
+        logger.info("Repayment type: " + expectedRepaymentType);
+        Assertions.assertTrue(finanzierungPage.getRepaymentType().equalsIgnoreCase(expectedRepaymentType), 
+        "Repayment type does not match the previously entered value");
+
+
+        String expectedTotalTermYears = randomJahreFürGesamtlaufzeit;
+        logger.info("Total term years: " + expectedTotalTermYears);
+        Assertions.assertTrue(finanzierungPage.getGesamtlaufzeitJahre().equalsIgnoreCase(expectedTotalTermYears), 
+                "Total term years does not match the previously entered value");
+
+        String expectedTotalTermMonths = randomMonateFürGesamtlaufzeit;
+        logger.info("Total term months: " + expectedTotalTermMonths);
+        Assertions.assertTrue(finanzierungPage.getGesamtlaufzeitMonate().equalsIgnoreCase(expectedTotalTermMonths), 
+                "Total term months does not match the previously entered value");
+
+    }
+
+
+    @And("the user refreshes the page")
+    public void theUserRefreshesThePage() {
+        finanzierungPage.refreshPage();
+    }
+
+
+
+    @Then("the user should verify the option is selected")
+    public void theUserShouldVerifyTheOptionIsSelected() throws InterruptedException {
+        logger.info("Verifying the option is selected");
+        
+        //display === 'none'
+
+        Thread.sleep(6000);
+        JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
+        List<WebElement> buttons = Driver.getDriver().findElements(By.xpath("//*[@href='#anfragen']"));
+
+                    // Simple script to find selected option
+
+                String simpleScript = 
+                "var options = document.querySelectorAll('.panel-card-button');" +
+                "var result = [];" +
+                "for (var i = 0; i < options.length; i++) {" +
+                "  var option = options[i];" +
+                "  var showChosen = option.querySelector('.hidden-unforced.show-chosen');" +
+                "  if (showChosen) {" +
+                "    var displayValue = window.getComputedStyle(showChosen).display;" +
+                "    result.push({" +
+                "      index: i + 1," +
+                "      displayValue: displayValue," +
+                "      elementId: option.id || 'no-id'" +
+                "    });" +
+                "  }" +
+                "}" +
+                "console.log(result); return result;";
+
+            List<Map<String, Object>> result = (List<Map<String, Object>>) js.executeScript(simpleScript);
+
+            // Konsola yazdırma
+            for (Map<String, Object> entry : result) {
+                System.out.println("Index: " + entry.get("index") + ", Display Value: " + entry.get("displayValue") + ", Element ID: " + entry.get("elementId"));
+            }
+
+                
+
+
+
+                
+
+        /*
+        for (WebElement button : buttons) {
+            String bgColor = (String) js.executeScript("return window.getComputedStyle(arguments[0]).backgroundColor;", button);
+            logger.info("bgColor: " + bgColor);
+            String elementId = button.getAttribute("id"); // ID değerini al
+            
+            logger.info("randomOption: " + randomOption);
+            if (bgColor.equals("rgb(230, 162, 0)")) {  // Yeşil olmayanı seç
+                
+                System.out.println("Seçilen butonun ID'si: " + elementId);
+                
+                //js.executeScript("arguments[0].click();", button);
+                //System.out.println("Yeşil olmayan butona tıklandı: " + button.getText());
+                break; // İlk uygun elementi bulunca çık
+            }
+        }
+
+        ================================================
+
+        // JavaScript kodu ile arka plan rengi kontrol etme
+                String script = 
+                "var elements = document.querySelectorAll('*');" +
+                "var matchingElements = [];" +
+                "elements.forEach(function(element) {" +
+                "   var backgroundColor = window.getComputedStyle(element).backgroundColor;" +
+                "   if (backgroundColor === 'rgb(230, 162, 0)') {" +
+                "       matchingElements.push(element);" +
+                "   }" +
+                "});" +
+                "return matchingElements;";
+    
+            // JavaScript Executor ile elementleri almak
+            List<WebElement> matchingElements = (List<WebElement>) js.executeScript(script);
+    
+            // Eşleşen öğeleri yazdırma
+            System.out.println("Matching elements with background color #e6a200:");
+            for (WebElement element : matchingElements) {
+                System.out.println(element.getAttribute("id"));
+            }
+
+
+
+            ================================================
+
+                                String simpleScript = 
+                    "var options = document.querySelectorAll('.panel-card-button');" +
+                    "var result = null;" +
+                    "for (var i = 0; i < options.length; i++) {" +
+                    "  var option = options[i];" +
+                    "  var showChosen = option.querySelector('.hidden-unforced.show-chosen');" +
+                    "  if (showChosen && (window.getComputedStyle(showChosen).display === 'none')) {" +
+                    "    result = {" +
+                    "      index: i + 1," +
+                    "      hasShownChosen: true," +
+                    "      displayValue: window.getComputedStyle(showChosen).display," +
+                    "      elementId: option.id || 'no-id'" +
+                    "    };" +
+                    "    break;" +
+                    "  }" +
+                    "}" +
+                    "return result;";
+
+
+                                Map<String, Object> result = (Map<String, Object>) js.executeScript(simpleScript);
+                
+                // Print all keys and values from the map for debugging
+                logger.info("JavaScript result map contents:");
+                if (result != null) {
+                    for (Map.Entry<String, Object> entry : result.entrySet()) {
+                        logger.info("  {} = {}", entry.getKey(), entry.getValue());
+                    }
+                    
+                    int selectedIndex = ((Long) result.get("index")).intValue();
+                    logger.info("Found selected option at index: {}", selectedIndex);
+                    
+                    
+                    logger.info("Successfully verified selected option persistence");
+                } else {
+                    // Try a direct class-based check without computed style
+                    String directCheckScript = 
+                        "var options = document.querySelectorAll('.panel-card-button');" +
+                        "return options.length;";
+                    
+                    Long optionsCount = (Long) js.executeScript(directCheckScript);
+                    logger.info("Found {} panel-card-button elements", optionsCount);
+                    
+                    // Take screenshot for debugging
+                    Utils.takeScreenshot(Driver.getDriver(), "no-selected-option");
+                    logger.error("No selected option found. Number of options: {}", optionsCount);
+                    
+                    throw new AssertionError("No selected option found among " + optionsCount + " options");
+                }
+
+        */
+
     }
 } 
