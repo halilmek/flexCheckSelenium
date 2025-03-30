@@ -16,6 +16,9 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -370,6 +373,158 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
     public void refreshPage() {
         driver.navigate().refresh();
         logger.info("Page refreshed");
+    }
+
+    public boolean getErrorMessageForLoanAmountAndRepaymentPercentage() {
+
+        try {
+
+            String expectedErrorMessageDarlehenswunsch = "Der Mindestwert beträgt 25.000,00.";
+            String expectedErrorMessageTilgung = "Der Mindestwert beträgt 1,00.";
+    
+            WebElement errorMessageElement = driver.findElement(By.xpath("//*[@id='finanzierung-form']/section/div[2]/div[1]/div[1]/div/p"));
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOf(errorMessageElement));
+    
+            String errorMessageDarlehenswunsch = errorMessageElement.getText();
+            logger.info("Error message for loan amount: " + errorMessageDarlehenswunsch);
+    
+            WebElement errorMessageElement2 = driver.findElement(By.xpath("//*[@id='finanzierung-form']/section/div[2]/div[1]/div[2]/div/p"));
+            WebDriverWait wait2 = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+            wait2.until(ExpectedConditions.visibilityOf(errorMessageElement2));
+    
+            String errorMessageTilgung = errorMessageElement2.getText();
+            logger.info("Error message for repayment percentage: " + errorMessageTilgung);
+            boolean isErrorMessageDarlehenswunschCorrect = errorMessageDarlehenswunsch.contains(expectedErrorMessageDarlehenswunsch);
+            boolean isErrorMessageTilgungCorrect = errorMessageTilgung.contains(expectedErrorMessageTilgung);
+
+            return isErrorMessageDarlehenswunschCorrect && isErrorMessageTilgungCorrect;
+        } catch (Exception e) {
+            return false;
+        } 
+    }
+
+    public boolean getErrorMessageForLoanAmountGreaterThan1000000() {
+
+        try {
+
+            String expectedErrorMessageDarlehenswunsch = "Der Höchstwert beträgt 1.000.000,00.";
+    
+            WebElement errorMessageElement = Driver.getDriver().findElement(By.xpath("//*[@id='finanzierung-form']/section/div[2]/div[1]/div[1]/div/p"));
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOf(errorMessageElement));
+    
+            String errorMessageDarlehenswunsch    = errorMessageElement.getText();
+            logger.info("Error message for loan amount: " + errorMessageDarlehenswunsch);
+    
+            boolean isErrorMessageDarlehenswunschCorrect = errorMessageDarlehenswunsch.contains(expectedErrorMessageDarlehenswunsch);
+
+            return isErrorMessageDarlehenswunschCorrect;
+        } catch (Exception e) {
+            return false;
+        } 
+    }
+
+    public boolean getErrorMessageForLoanAmountGreaterThanPurchasePrice() {
+
+        try {
+
+            String expectedErrorMessageDarlehenswunsch = "Vielen Dank für Ihr Interesse an unseren Baufinanzierungsprodukten. Aufgrund Ihrer Angaben können wir Ihnen leider keine Ergebnisse anzeigen. Bitte überprüfen Sie Ihre Angaben oder wenden Sie sich direkt an unser Beraterteam 0800/2385-544.";
+    
+            WebElement errorMessageElement = Driver.getDriver().findElement(By.xpath("//*[@id='kategorie4']/div/div/p"));
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOf(errorMessageElement));
+    
+            String errorMessageDarlehenswunsch = errorMessageElement.getText();
+            logger.info("Error message for loan amount: " + errorMessageDarlehenswunsch);
+    
+            boolean isErrorMessageDarlehenswunschCorrect = errorMessageDarlehenswunsch.contains(expectedErrorMessageDarlehenswunsch);
+
+            return isErrorMessageDarlehenswunschCorrect;
+        } catch (Exception e) {
+            return false;
+        } 
+    }
+
+    public boolean getErrorMessageForMonthlyPayment() {
+
+        try {
+
+            String expectedErrorMessageMonthlyPayment = "nope!";
+    //No element located!
+            WebElement errorMessageElement = Driver.getDriver().findElement(By.xpath("//*[@id='kategorie4']/div/div/p"));
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOf(errorMessageElement));
+    
+            String errorMessageMonthlyPayment = errorMessageElement.getText();
+            logger.info("Error message for monthly payment: " + errorMessageMonthlyPayment);
+    
+            boolean isErrorMessageMonthlyPaymentCorrect = errorMessageMonthlyPayment.contains(expectedErrorMessageMonthlyPayment);
+
+            return isErrorMessageMonthlyPaymentCorrect;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean getErrorMessageForTotalTermInYearsAndTotalTermInMonths() {
+
+
+        try {
+
+            String expectedErrorMessage = "Bitte geben Sie eine ganze Zahl ein.";
+
+            JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
+            List<WebElement> pElements = Driver.getDriver().findElements(By.tagName("p"));
+
+            List<String> texts = new ArrayList<>();
+            for (WebElement pElement : pElements) {
+                String text = (String) js.executeScript("return arguments[0].innerText;", pElement);
+                if (!text.trim().isEmpty()) { // Boş olmayanları al
+                    texts.add(text);
+                    logger.info("Text: " + text);
+                }
+            }
+            
+
+            return texts.contains(expectedErrorMessage);
+
+        } catch (Exception e) {
+            logger.error("Error message verification failed for total term in years and total term in months: {}", e.getMessage());
+            throw e;
+        }
+ 
+    }
+
+    public boolean getErrorMessageForTotalTermInYearsAndTotalTermInMonths2() {
+
+
+        try {
+
+            String expectedErrorMessage = "Bitte geben Sie eine ganze Zahl ein.";
+            List<WebElement> targetElements = Driver.getDriver().findElements(By.xpath("//p[contains(text(), '" + expectedErrorMessage + "')]"));
+            
+            logger.info("Hata mesajını içeren element XPath ile bulundu: " + targetElements);
+
+            WebElement errorMessageElement = targetElements.get(0);
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOf(errorMessageElement));
+            String errorMessageTotalTermInYears = errorMessageElement.getText();
+            logger.info("Error message for total term in years: " + errorMessageTotalTermInYears);
+    
+            WebElement errorMessageElement2 = targetElements.get(1);
+            WebDriverWait wait2 = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+            wait2.until(ExpectedConditions.visibilityOf(errorMessageElement2));
+            String errorMessageTotalTermInMonths = errorMessageElement2.getText();
+            logger.info("Error message for total term in months: " + errorMessageTotalTermInMonths);
+
+            return errorMessageTotalTermInYears.contains(expectedErrorMessage) && errorMessageTotalTermInMonths.contains(expectedErrorMessage);
+
+        } catch (Exception e) {
+            logger.error("Error message verification failed for total term in years and total term in months: {}", e.getMessage());
+            throw e;
+        }
+ 
     }
 
 

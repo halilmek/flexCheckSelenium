@@ -21,6 +21,7 @@ import java.time.Duration;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -151,6 +152,20 @@ public class KreditberechnungSteps {
         if (months.equalsIgnoreCase("randomMonate")) {
             months = randomMonateFürGesamtlaufzeit; // TestDataGenerator'dan alınan rastgele değer
         }
+        /*
+        JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
+        List<WebElement> pElements = Driver.getDriver().findElements(By.tagName("p"));
+
+        List<String> texts = new ArrayList<>();
+        for (WebElement pElement : pElements) {
+            String text = (String) js.executeScript("return arguments[0].innerText;", pElement);
+            if (!text.trim().isEmpty()) { // Boş olmayanları al
+                texts.add(text);
+            }
+        }
+        logger.info("Tüm <p> etiketlerindeki metinler BEFORE ERROR MESSAGE: " + texts);
+        System.out.println("Tüm <p> etiketlerindeki metinler: " + texts);
+        */
 
         finanzierungPage.enterTotalTermMonths(months);
 
@@ -198,7 +213,6 @@ public class KreditberechnungSteps {
     public void verifyCalculatorValues() {
 
         //Assertions.assertTrue(offerSelectionPage.verifyingCalculatorValuesForTilgungPaymentType(randomPurchasePrice, randomLoanAmount, randomPurpose, randomRepaymentPercentage));
-
         //offerSelectionPage.verifyingCalculatorValuesForTilgungPaymentTypeInFirstModal(randomLoanAmount, randomPurpose, randomPurchasePrice, randomRepaymentPercentage);
         //logger.info("Method result: " + offerSelectionPage.verifyingCalculatorValuesForTilgungPaymentTypeInFirstModal(randomLoanAmount, randomPurpose, randomPurchasePrice, randomRepaymentPercentage));
         //boolean result = offerSelectionPage.verifyingCalculatorValuesForTilgungPaymentTypeInSecondModal("", randomLoanAmount, randomPurpose, randomPurchasePrice, randomRepaymentPercentage);
@@ -577,6 +591,53 @@ public class KreditberechnungSteps {
         finanzierungPage.refreshPage();
     }
 
+    @Then("the user should see the error message for postal code and purchase price")
+    public void theUserShouldSeeTheErrorMessageForPostalCodeAndPurchasePrice() {
+
+        Assertions.assertTrue(angabenZumObjektPage.getErrorMessageForPostalCodeAndPurchasePrice(), "Error message verification failed");
+    }
+
+    @Then("the user should see the error message for loan amount and repayment percentage")
+    public void theUserShouldSeeTheErrorMessageForLoanAmountAndRepaymentPercentage() {
+
+        Assertions.assertTrue(finanzierungPage.getErrorMessageForLoanAmountAndRepaymentPercentage(), "Error message verification failed");
+    }
+
+
+    @Then("the user should see the error message for loan amount, as the loan amount is greater than 1000000")
+    public void theUserShouldSeeTheErrorMessageForLoanAmountGreaterThan1000000() {
+
+        Assertions.assertTrue(finanzierungPage.getErrorMessageForLoanAmountGreaterThan1000000(), "Error message verification failed");
+    }
+
+
+    @Then("the user should not see the calculation results to proceed to next page")
+    public void theUserShouldNotSeeTheCalculationResultsToProceedToNextPage() {
+
+        Assertions.assertTrue(finanzierungPage.getErrorMessageForLoanAmountGreaterThanPurchasePrice(), "Error message verification failed");
+    }
+
+    @Then("the user should see the error message for monthly payment")
+    public void theUserShouldSeeTheErrorMessageForMonthlyPayment() {
+
+        Assertions.assertTrue(finanzierungPage.getErrorMessageForMonthlyPayment(), "Error message verification failed for monthly payment");
+    }
+
+
+    @Then("the user should see the error message for total term in years and total term in months")
+    public void theUserShouldSeeTheErrorMessageForTotalTermInYearsAndTotalTermInMonths() {
+
+        /*
+        String expectedErrorMessage = "Bitte geben Sie eine ganze Zahl ein.";
+        WebElement targetElement = Driver.getDriver().findElement(By.xpath("//p[contains(text(), '" + expectedErrorMessage + "')]"));
+        
+        logger.info("Hata mesajını içeren element XPath ile bulundu: " + targetElement);
+         */
+
+        
+        //Assertions.assertTrue(finanzierungPage.getErrorMessageForTotalTermInYearsAndTotalTermInMonths(), "Error message verification failed for total term in years and total term in months");
+        Assertions.assertTrue(finanzierungPage.getErrorMessageForTotalTermInYearsAndTotalTermInMonths2(), "Error message verification failed for total term in years and total term in months");
+    }
 
 
     //======================in order to get options visuality status through javascript with displayValue=========================

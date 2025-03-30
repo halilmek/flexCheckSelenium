@@ -1,10 +1,12 @@
 package com.test.pages;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -18,6 +20,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 
 /**
  * Page class representing the "Angaben zum Objekt" (Property Details) page
@@ -226,6 +229,37 @@ public class AngabenZumObjektPage extends BasePage {
         WebElement element = Driver.getDriver().findElement(By.id("kaufpreis"));
         logger.info("Purchase price: " + element.getAttribute("value"));
         return element.getAttribute("value");
+    }
+
+
+
+    public boolean getErrorMessageForPostalCodeAndPurchasePrice() {
+
+        try {
+
+            String expectedErrorMessagePostalCode = "Bitte geben Sie eine gültige Postleitzahl ein";
+            String expectedErrorMessagePurchasePrice = "Der Mindestwert beträgt 1,00.";
+    
+            WebElement errorMessageElement = Driver.getDriver().findElement(By.xpath("//*[@id='objekt-form']/section/div[2]/div[1]/div[2]/div/p"));
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOf(errorMessageElement));
+    
+            String errorMessagePostalCode    = errorMessageElement.getText();
+            logger.info("Error message: " + errorMessagePostalCode);
+    
+            WebElement errorMessageElement2 = Driver.getDriver().findElement(By.xpath("//*[@id='objekt-form']/section/div[2]/div[1]/div[3]/div/p"));
+            WebDriverWait wait2 = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+            wait2.until(ExpectedConditions.visibilityOf(errorMessageElement2));
+    
+            String errorMessagePurchasePrice = errorMessageElement2.getText();
+            logger.info("Error message: " + errorMessagePurchasePrice);
+            boolean isErrorMessagePostalCodeCorrect = errorMessagePostalCode.contains(expectedErrorMessagePostalCode);
+            boolean isErrorMessagePurchasePriceCorrect = errorMessagePurchasePrice.contains(expectedErrorMessagePurchasePrice);
+
+            return isErrorMessagePostalCodeCorrect && isErrorMessagePurchasePriceCorrect;
+        } catch (Exception e) {
+            return false;
+        }   
     }
 
 
