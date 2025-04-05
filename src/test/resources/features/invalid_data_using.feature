@@ -87,7 +87,7 @@ Feature: FlexCheck Calculator Functionality
     Then the user should see the error message for monthly payment
 
 
-    @wip
+    #@wip
   Scenario: Entering invalid data to fullfill the form in Angaben zum Objekt page with Gesamtlaufzeit as payment type
     When the user selects "randomPurpose" as usage purpose
     And the user enters postal code "randomPostalCode"

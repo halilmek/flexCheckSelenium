@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
@@ -25,27 +26,47 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
- * Page class representing the Final page with calculation results
+ * Page-Klasse für die Abschlussseite.
+ * Enthält Elemente und Methoden zur Interaktion mit der finalen Anfrageseite,
+ * auf der eine Nachricht eingegeben werden kann und die Angebotsanfrage abgeschlossen wird.
  */
 public class FinalPage extends BasePage {
     private static final Logger logger = LoggerFactory.getLogger(FinalPage.class);
 
+    /**
+     * Konstruktor für die FinalPage
+     */
     public FinalPage() {
         PageFactory.initElements(Driver.getDriver(), this);
     }
 
+    /**
+     * Message Text Area
+     */
     @FindBy(xpath = "//*[@id='informationen']")
     private WebElement messageTextArea;
 
+    /**
+     * Submit Button
+     */
     @FindBy(xpath = "//*[@id='sendeAnfrage']")
     private WebElement submitButton;
 
+    /**
+     * Success Message
+     */
     @FindBy(xpath = "//*[@id='datenUebermittlung']/div/div/div[1]/div[1]")
     private WebElement successMessage;
 
+    /**
+     * Zurück Button
+     */
     @FindBy(xpath = "//*[@id='sendeAnfrage']")
     private WebElement zurückButtoElement;
 
+    /**
+     * Schreibt eine Nachricht in das Textfeld
+     */
     public void writeMessage() {
         String message = "This is a test message for the financing request.";
         waitForElementToBeClickable(messageTextArea);
@@ -57,6 +78,9 @@ public class FinalPage extends BasePage {
         logger.info("Wrote message: {}", message);
     }
 
+    /**
+     * Klickt auf den Submit Button
+     */
     public void clickSubmitButton() {
         waitForElementToBeClickable(submitButton);
         highlightElement(submitButton);
@@ -66,6 +90,10 @@ public class FinalPage extends BasePage {
         logger.info("Clicked submit button");
     }
 
+    /**
+     * Macht einen Screenshot
+     * @param name
+     */
     public void takeScreenshot(String name) {
         try {
             TakesScreenshot ts = (TakesScreenshot) Driver.getDriver();
@@ -79,6 +107,10 @@ public class FinalPage extends BasePage {
         }
     }
 
+    /**
+     * Prüft ob die Erfolgsmeldung angezeigt wird
+     * @return true wenn die Erfolgsmeldung angezeigt wird, false sonst
+     */
     public boolean isSuccessMessageDisplayed() {
         waitForPageLoad();
         wait.until(ExpectedConditions.visibilityOf(successMessage));
@@ -87,6 +119,10 @@ public class FinalPage extends BasePage {
         return successMessage.isDisplayed();
     }
 
+    /**
+     * Prüft ob die Erfolgsmeldung angezeigt wird für das Hochladen von Dokumenten
+     * @return true wenn die Erfolgsmeldung angezeigt wird, false sonst
+     */
     public boolean isSuccessMessageDisplayedForFileUpload() {
         try {
             WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
@@ -116,6 +152,10 @@ public class FinalPage extends BasePage {
         return false;
     }
 
+    /**
+     * Prüft ob die unerfolgreiche Nachricht angezeigt wird für das Hochladen von Dokumenten
+     * @return true wenn die unerfolgreiche Nachricht angezeigt wird, false sonst
+     */
     public boolean notSuccessMessageDisplayedForFileUpload() {
         JavascriptExecutor js1 = (JavascriptExecutor) Driver.getDriver();
       
@@ -144,6 +184,9 @@ public class FinalPage extends BasePage {
         return messageFound;
     }
 
+    /**
+     * Klickt auf den Zurück Button
+     */
     public void clickBackButtonOnFinalPage() {
         try {
             logger.info("Clicking back button to return to upload page");
@@ -298,6 +341,10 @@ public class FinalPage extends BasePage {
         }
     }
 
+    /**
+     * Prüft ob die Nachricht im Textfeld angezeigt wird
+     * @return true wenn die Nachricht im Textfeld angezeigt wird, false sonst
+     */
     public boolean getEnteredMessageInFinalPage() {
         try {
             logger.info("Verifying message text persistence");
@@ -326,6 +373,26 @@ public class FinalPage extends BasePage {
         } catch (Exception e) {
             logger.error("Failed to verify message in final page: {}", e.getMessage());
             Utils.takeScreenshot(driver, "message-verification-error");
+            return false;
+        }
+    }
+
+    /**
+     * Prüft ob alle erforderlichen Felder angezeigt werden
+     * @return true wenn alle erforderlichen Felder angezeigt werden, false sonst
+     */
+    public boolean isDisplayedAllRequiredFields() {
+
+        try {
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOf(messageTextArea));
+            
+            boolean isMessageTextAreaVisible = messageTextArea.isDisplayed();
+            logger.info("Message text area is visible: " + isMessageTextAreaVisible);
+            
+            return isMessageTextAreaVisible;
+            
+        } catch (Exception e) {
             return false;
         }
     }

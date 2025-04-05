@@ -19,11 +19,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * BrowserUtil, Utility-Klasse für Browser-spezifische Funktionen
+ */
 public class BrowserUtil {
     private static final Logger logger = LoggerFactory.getLogger(BrowserUtil.class);
     private static final Map<String, String> storedValues = new HashMap<>();
     
-
+    /**
+     * Konstruktor für die BrowserUtil-Klasse
+     */
     public BrowserUtil() {
         PageFactory.initElements(Driver.getDriver(), this);
     }

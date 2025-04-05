@@ -129,7 +129,19 @@
             <version>1.16.1</version>
         </dependency>
 
+        <!-- For Failed Test => There is no rerun.txt and runner for it
+        below configuration may help, but not sure!
+        
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.0.0-M5</version>
+            <configuration>
+                <rerunFailingTestsCount>2</rerunFailingTestsCount>
+            </configuration>
+        </plugin>
 
+         -->
 
     </dependencies>
 

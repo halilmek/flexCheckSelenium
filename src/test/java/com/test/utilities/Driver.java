@@ -13,11 +13,18 @@ import java.time.Duration;
 import java.util.logging.Level;
 import org.openqa.selenium.devtools.DevTools;
 
+/**
+ * Driver, Utility-Klasse für den WebDriver
+ */
 public class Driver {
     private Driver() {}
 
     private static InheritableThreadLocal<WebDriver> driverPool = new InheritableThreadLocal<>();
 
+    /**
+     * Getter für den WebDriver
+     * @return WebDriver
+     */
     public static WebDriver getDriver() {
         if (driverPool.get() == null) {
             String browser = System.getProperty("browser") != null ? System.getProperty("browser") : ConfigurationReader.getProperty("browser");
@@ -54,6 +61,9 @@ public class Driver {
         return driverPool.get();
     }
 
+    /**
+     * Schließt den WebDriver
+     */
     public static void closeDriver() {
         if (driverPool.get() != null) {
             driverPool.get().quit();

@@ -1,11 +1,8 @@
 package com.test.utilities;
 
-import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +15,6 @@ import java.nio.file.Paths;
  * Diese Klasse stellt allgemeine Hilfsmethoden für die Testautomatisierung bereit.
  */
 public class Utils {
-    private static final Logger logger = LoggerFactory.getLogger(Utils.class);
 
     /**
      * Erstellt einen Screenshot vom aktuellen Browserzustand.
@@ -40,10 +36,10 @@ public class Utils {
             Path targetFile = Paths.get("target/screenshots/" + fileName + ".png");
             Files.copy(scrFile.toPath(), targetFile);
             
-            logger.info("Screenshot saved: " + targetFile);
+            System.out.println("Screenshot saved: " + targetFile);
             return true;
         } catch (IOException e) {
-            logger.error("Error taking screenshot: " + e.getMessage());
+            System.err.println("Error taking screenshot: " + e.getMessage());
             return false;
         }
     }

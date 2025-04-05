@@ -63,7 +63,10 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
     private WebElement totalTermMonthsInput;
 
 
-
+    /**
+     * Enters the loan amount into the loan amount input field
+     * @param amount The amount to enter into the loan amount input field
+     */
     public void enterDarlehenshoehe(String amount) {
         waitForElementToBeClickable(darlehenswunschInput);
         highlightElement(darlehenswunschInput);
@@ -74,6 +77,10 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
         logger.info("Entered loan amount: {}", amount);
     }
 
+    /**
+     * Enters the repayment percentage into the repayment percentage input field
+     * @param percentage The percentage to enter into the repayment percentage input field
+     */
     public void enterTilgung(String percentage) throws InterruptedException {
         new Actions(driver).click(tilgungInput)
             .keyDown(Keys.COMMAND)
@@ -85,6 +92,10 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
         logger.info("Entered repayment percentage: {}", percentage);
     }
 
+    /**
+     * Selects the repayment type from the repayment type dropdown
+     * @param type The type to select from the repayment type dropdown
+     */
     public void selectRueckzahlungsArt(String type) {
         wait.until(ExpectedConditions.elementToBeClickable(rueckzahlungsArtDropdown));
         highlightElement(rueckzahlungsArtDropdown);
@@ -95,6 +106,10 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
         logger.info("Successfully selected repayment type: " + type);
     }
 
+    /**
+     * Enters the first payout date into the first payout date input field
+     * @throws InterruptedException if an error occurs while entering the first payout date
+     */
     public void enterAuszahlungsdatum() throws InterruptedException {
         wait.until(ExpectedConditions.elementToBeClickable(auszahlungsdatumInput));
         highlightElement(auszahlungsdatumInput);
@@ -113,6 +128,10 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
         logger.info("Successfully entered payout date: " + formattedDate);
     }
 
+    /**
+     * Clicks the "Weiter" button in the Angaben zum Finanzierungswunsch page
+     * @throws InterruptedException if an error occurs while clicking the button
+     */
     public void clickWeiterInAngabenZumFinanzierungswunschPage() throws InterruptedException {
         logger.info("Attempting to click Weiter button in Angaben zum Finanzierungswunsch page");
         try {
@@ -158,7 +177,9 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
     }
 
 
-
+    /**
+     * Clicks the back button in the Angaben zum Finanzierungswunsch page
+     */
     public void clickBackButtonInAngabenZumFinanzierungswunschPage() {
 
         logger.info("Clicking back button to return to Objekt page");
@@ -180,7 +201,10 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
     }   
 
 
-
+    /**
+     * Enters the monthly payment amount into the monthly payment input field
+     * @param amount The amount to enter into the monthly payment input field
+     */
     public void enterMonthlyPayment(String amount) {
 
         try {
@@ -202,6 +226,10 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
         }
     }
 
+    /**
+     * Enters the total term years into the total term years input field
+     * @param years The years to enter into the total term years input field
+     */
     public void enterTotalTermYears(String years) {
 
         try {
@@ -224,6 +252,10 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
         }
     }
 
+    /**
+     * Enters the total term months into the total term months input field
+     * @param months The months to enter into the total term months input field
+     */ 
     public void enterTotalTermMonths(String months) {
 
         try {
@@ -334,6 +366,10 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
         }
     }
 
+    /**
+     * Gets the current value of the monthly payment field
+     * @return String containing the monthly payment
+     */
     public String getMonatlicheRate() {
         try {
             String valueFromProperty = (String) js.executeScript("return arguments[0].value;", monthlyPaymentInput);
@@ -347,7 +383,10 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
         }
     }
 
-
+    /**
+     * Gets the current value of the total term years field
+     * @return String containing the total term years
+     */
     public String getGesamtlaufzeitJahre() {
         try {
             String valueFromProperty = (String) js.executeScript("return arguments[0].value;", totalTermYearsInput);
@@ -359,6 +398,10 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
         }
     }
 
+    /**
+     * Gets the current value of the total term months field
+     * @return String containing the total term months
+     */
     public String getGesamtlaufzeitMonate() {
         try {
             String valueFromProperty = (String) js.executeScript("return arguments[0].value;", totalTermMonthsInput);
@@ -370,11 +413,18 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
         }
     }
 
+    /**
+     * Refreshes the current page
+     */
     public void refreshPage() {
         driver.navigate().refresh();
         logger.info("Page refreshed");
     }
 
+    /**
+     * Gets the error message for the loan amount and repayment percentage
+     * @return boolean value indicating whether the error message is correct
+     */
     public boolean getErrorMessageForLoanAmountAndRepaymentPercentage() {
 
         try {
@@ -404,6 +454,10 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
         } 
     }
 
+    /**
+     * Gets the error message for the loan amount greater than 1.000.000
+     * @return boolean value indicating whether the error message is correct
+     */
     public boolean getErrorMessageForLoanAmountGreaterThan1000000() {
 
         try {
@@ -425,6 +479,10 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
         } 
     }
 
+    /**
+     * Gets the error message for the loan amount greater than the purchase price
+     * @return boolean value indicating whether the error message is correct
+     */
     public boolean getErrorMessageForLoanAmountGreaterThanPurchasePrice() {
 
         try {
@@ -446,6 +504,10 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
         } 
     }
 
+    /**
+     * Gets the error message for the monthly payment
+     * @return boolean value indicating whether the error message is correct
+     */
     public boolean getErrorMessageForMonthlyPayment() {
 
         try {
@@ -467,6 +529,10 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
         }
     }
 
+    /**
+     * Gets the error message for the total term in years and total term in months
+     * @return boolean value indicating whether the error message is correct
+     */
     public boolean getErrorMessageForTotalTermInYearsAndTotalTermInMonths() {
 
 
@@ -496,6 +562,10 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
  
     }
 
+    /**
+     * Gets the error message for the total term in years and total term in months
+     * @return boolean value indicating whether the error message is correct
+     */
     public boolean getErrorMessageForTotalTermInYearsAndTotalTermInMonths2() {
 
 
@@ -525,6 +595,37 @@ public class AngabenZumFinanzierungswunschPage extends BasePage {
             throw e;
         }
  
+    }
+
+    /**
+     * Checks if all required fields are displayed in the Angaben zum Finanzierungswunsch page
+     * @return boolean value indicating whether all required fields are displayed
+     */
+    public boolean isDisplayedAllRequiredFields() {
+
+        try {
+
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOf(darlehenswunschInput));
+            wait.until(ExpectedConditions.visibilityOf(tilgungInput));
+            wait.until(ExpectedConditions.visibilityOf(rueckzahlungsArtDropdown));
+            wait.until(ExpectedConditions.visibilityOf(auszahlungsdatumInput));
+
+            
+
+            boolean isDarlehenswunschInputDisplayed = darlehenswunschInput.isDisplayed();
+            logger.info("Darlehenswunsch input is displayed: " + isDarlehenswunschInputDisplayed);
+            boolean isTilgungInputDisplayed = tilgungInput.isDisplayed();
+            logger.info("Tilgung input is displayed: " + isTilgungInputDisplayed);
+            boolean isRueckzahlungsArtDropdownDisplayed = rueckzahlungsArtDropdown.isDisplayed();
+            logger.info("RueckzahlungsArt dropdown is displayed: " + isRueckzahlungsArtDropdownDisplayed);
+            boolean isAuszahlungsdatumInputDisplayed = auszahlungsdatumInput.isDisplayed();
+            logger.info("Auszahlungsdatum input is displayed: " + isAuszahlungsdatumInputDisplayed);
+            
+            return isDarlehenswunschInputDisplayed && isTilgungInputDisplayed && isRueckzahlungsArtDropdownDisplayed && isAuszahlungsdatumInputDisplayed;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 

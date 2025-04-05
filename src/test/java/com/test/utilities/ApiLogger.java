@@ -4,6 +4,9 @@ import io.restassured.response.Response;
 import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.FilterableResponseSpecification;
 
+/**
+ * ApiLogger, filterierende Klasse für die API-Aufrufe
+ */
 public class ApiLogger implements Filter {
     @Override
     public Response filter(FilterableRequestSpecification requestSpec,

@@ -12,39 +12,75 @@ import org.openqa.selenium.support.ui.Select;
  */
 public class FlexCheckCalculatorPage extends BasePage {
 
+    /**
+     * Verwendungszweck
+     */
     @FindBy(id = "verwendungszweck")
     private WebElement usagePurposeSelect;
 
+    /**
+     * Postleitzahl
+     */
     @FindBy(id = "plz")
     private WebElement postalCodeInput;
 
+    /**
+     * Kaufpreis
+     */
     @FindBy(id = "kaufpreis")
     private WebElement purchasePriceInput;
 
+    /**
+     * Objektart
+     */
     @FindBy(id = "objektart")
     private WebElement propertyTypeSelect;
 
+    /**
+     * Darlehensbetrag
+     */
     @FindBy(id = "darlehensbetrag")
     private WebElement loanAmountInput;
 
+    /**
+     * Tilgungsprozentsatz
+     */
     @FindBy(id = "tilgung")
     private WebElement repaymentPercentageInput;
 
+    /**
+     * Tilgungsart
+     */
     @FindBy(id = "tilgungsart")
     private WebElement repaymentTypeSelect;
 
+    /**
+     * Auszahlungstermin
+     */
     @FindBy(id = "auszahlungstermin")
     private WebElement payoutDateInput;
 
+    /**
+     * Berechnen Button
+     */
     @FindBy(id = "berechnen")
     private WebElement calculateButton;
 
+    /**
+     * Ergebniscontainer
+     */
     @FindBy(css = ".result-container")
     private WebElement resultContainer;
 
+    /**
+     * Fehlermeldung
+     */
     @FindBy(css = ".error-message")
     private WebElement errorMessage;
 
+    /**
+     * Konstruktor für die FlexCheckCalculatorPage
+     */
     public FlexCheckCalculatorPage() {
         super();
     }

@@ -154,3 +154,26 @@ Scenario Outline: Calculate financing with different property types
       | 2  |
       | 3  |
       | 4  |
+
+
+
+  #@wip
+  Scenario: Verifying page elements loaded as expected
+    Then the user should see related fields in Angaben zum Objekt page
+    When the user selects "randomPurpose" as usage purpose
+    And the user enters postal code "randomPostalCode"
+    And the user enters purchase price "randomPurchasePrice"
+    And the user selects "randomPropertyType" as property type
+    And the user clicks on Weiter in Angaben zum Objekt page
+    Then the user should see related fields in Angaben zum Finanzierungswunsch page
+    And the user enters desired loan amount "randomLoanAmount"
+    And the user enters repayment percentage "randomRepaymentPercentage"
+    And the user selects repayment type "Tilgung in %"
+    And the user enters first payout date
+    And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
+    Then the user should see the calculation results
+    And the user selects "randomOption" option
+    And the user clicks on Angebote anfordern
+    Then the user should see the related fields in Upload page
+    And the user clicks on Weiter in DokumentHochladung page
+    Then the user should see the related fields in Final page

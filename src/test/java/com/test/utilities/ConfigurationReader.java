@@ -4,9 +4,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * ConfigurationReader, Utility-Klasse für die Konfiguration
+ */
 public class ConfigurationReader {
     private static Properties properties;
 
+    /**
+     * Konstruktor für die ConfigurationReader-Klasse
+     */
     static {
         try {
             String path = "configuration.properties";
@@ -20,6 +26,11 @@ public class ConfigurationReader {
         }
     }
 
+    /**
+     * Liest eine Eigenschaft aus der Konfigurationsdatei
+     * @param key Schlüssel der Eigenschaft
+     * @return Wert der Eigenschaft
+     */
     public static String getProperty(String key) {
         return properties.getProperty(key);
     }

@@ -40,6 +40,10 @@ import org.jsoup.select.Elements;
 public class OfferSelectionPage extends BasePage {
     private static final Logger logger = LoggerFactory.getLogger(OfferSelectionPage.class);
 
+    /**
+     * Konstruktor für die OfferSelectionPage-Klasse.
+     * Initialisiert PageFactory-Elemente.
+     */
     public OfferSelectionPage() {
         PageFactory.initElements(Driver.getDriver(), this);
     }
@@ -139,6 +143,10 @@ public class OfferSelectionPage extends BasePage {
         return actualData.contains(expectedData);
     }
 
+    /**
+     * Prüft, ob die Angebotsergebnisse angezeigt werden
+     * @return true, wenn die Ergebnisse angezeigt werden
+     */
     public boolean areResultsDisplayed() {
         try {
             wait.until(ExpectedConditions.visibilityOf(resultsForm));
@@ -151,6 +159,11 @@ public class OfferSelectionPage extends BasePage {
         }
     }
 
+    /**
+     * Prüft, ob ein bestimmter Text in den Angebotsergebnissen angezeigt wird
+     * @param expectedText Der zu suchende Text
+     * @return true, wenn der Text in den Ergebnissen gefunden wurde
+     */
     public boolean isTextDisplayedInResults(String expectedText) {
         try {
             wait.until(ExpectedConditions.visibilityOf(resultsTableHead));
@@ -168,6 +181,10 @@ public class OfferSelectionPage extends BasePage {
         }
     }
 
+    /**
+     * Wählt eine verfügbare Angebotsoption aus
+     * @throws Exception Wenn die Auswahl nicht möglich ist
+     */
     public void selectAnAvailableOption() throws Exception {
         logger.info("Selecting option number: {}", fakeOptionNumber);
         try {
@@ -186,8 +203,9 @@ public class OfferSelectionPage extends BasePage {
     
     }
 
-
-
+    /**
+     * Klickt auf den "Angebot anfordern" Button, um zur nächsten Seite zu navigieren
+     */
     public void clickAngebotAnfordern() {
         try {
             wait.until(ExpectedConditions.elementToBeClickable(angebotAnfordernButton));
@@ -202,6 +220,10 @@ public class OfferSelectionPage extends BasePage {
         }
     }
 
+    /**
+     * Wählt eine bestimmte Angebotsoption anhand der Optionsnummer aus
+     * @param optionNumber Die Nummer der auszuwählenden Option
+     */
     public void selectOption(String optionNumber) {
         logger.info("Selecting option number: {}", optionNumber);
         try {
@@ -219,6 +241,10 @@ public class OfferSelectionPage extends BasePage {
         }
     }
 
+    /**
+     * Prüft, ob die ausgewählte Option angezeigt wird
+     * @param optionNumber Die Nummer der zu überprüfenden Option
+     */
     public void isSelectedOptionDisplayed(String optionNumber) {
         
         try {
@@ -234,6 +260,11 @@ public class OfferSelectionPage extends BasePage {
         }
     }
 
+    /**
+     * Alternative Methode, um zu prüfen, ob die ausgewählte Option angezeigt wird
+     * Verwendet JavaScript, um den Status des Radiobuttons zu überprüfen
+     * @param optionNumber Die Nummer der zu überprüfenden Option
+     */
     public void isSelectedOptionDisplayed2(String optionNumber) {
         
         try {
@@ -251,6 +282,12 @@ public class OfferSelectionPage extends BasePage {
         }
     }
 
+    /**
+     * Erweiterte Methode, um zu prüfen, ob die ausgewählte Option angezeigt wird
+     * Versucht verschiedene Selektoren und Methoden, um den Auswahlstatus zu bestimmen
+     * @param optionNumber Die Nummer der zu überprüfenden Option
+     * @return true, wenn die Option ausgewählt ist, sonst false
+     */
     public boolean isSelectedOptionDisplayed3(String optionNumber) {
         try {
             // Wait for any loading indicators to disappear
@@ -325,6 +362,10 @@ public class OfferSelectionPage extends BasePage {
     
 
 
+    /**
+     * Klickt auf den Details-Button, um den Detail-Modal-Dialog zu öffnen
+     * Versucht verschiedene Klickmethoden, falls die Standard-Methode fehlschlägt
+     */
     public void clickDetailsButton() {
         try {
             // Find all details buttons
@@ -435,6 +476,10 @@ public class OfferSelectionPage extends BasePage {
         }
     }
 
+    /**
+     * Gibt die Werte aus dem Modal-Dialog in der Konsole aus
+     * Extrahiert alle Detail-Zeilen und zeigt Label-Value-Paare an
+     */
     public void printModalValues() {
         try {
             // Get all detail rows with a more specific selector
@@ -503,6 +548,16 @@ public class OfferSelectionPage extends BasePage {
     }
 
 
+    /**
+     * Überprüft die Rechner-Werte für den Tilgungs-Zahlungstyp
+     * Vergleicht die gespeicherten Werte mit den angezeigten Werten im Modal-Dialog
+     * 
+     * @param randomPurchasePrice Der zufällig generierte Kaufpreis
+     * @param randomLoanAmount Der zufällig generierte Darlehensbetrag
+     * @param randomPurpose Der zufällig generierte Verwendungszweck
+     * @param randomRepaymentPercentage Der zufällig generierte Tilgungsprozentsatz
+     * @return true, wenn alle Werte übereinstimmen, sonst false
+     */
     public boolean verifyingCalculatorValuesForTilgungPaymentType
     (String randomPurchasePrice, String randomLoanAmount, String randomPurpose, String randomRepaymentPercentage) {
 
@@ -539,6 +594,14 @@ public class OfferSelectionPage extends BasePage {
 
     }
 
+    /**
+     * Überprüft die Rechner-Werte für den Tilgungs-Zahlungstyp im ersten Modal-Dialog
+     * Extrahiert und validiert verschiedene Finanzierungsdetails aus dem Modal
+     * 
+     * @param randomPurchasePrice Der zufällig generierte Kaufpreis
+     * @param params Zusätzliche optionale Parameter
+     * @return true, wenn die Überprüfung erfolgreich ist, sonst false
+     */
     public boolean verifyingCalculatorValuesForTilgungPaymentTypeInFirstModal
     (String randomPurchasePrice, String... params) {
 
@@ -668,6 +731,14 @@ public class OfferSelectionPage extends BasePage {
     }
 
 
+    /**
+     * Überprüft die Rechner-Werte für den Tilgungs-Zahlungstyp im zweiten Modal-Dialog
+     * Extrahiert und validiert verschiedene Finanzierungsdetails aus dem zweiten Modal
+     * 
+     * @param randomPurchasePrice Der zufällig generierte Kaufpreis
+     * @param params Zusätzliche optionale Parameter für die Validierung
+     * @return true, wenn die Überprüfung erfolgreich ist, sonst false
+     */
     public boolean verifyingCalculatorValuesForTilgungPaymentTypeInSecondModal
     (String randomPurchasePrice, String... params) {
 

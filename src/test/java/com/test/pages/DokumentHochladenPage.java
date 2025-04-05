@@ -13,7 +13,10 @@ import com.test.utilities.Utils;
 import java.io.File;
 import java.time.Duration;
 import java.util.List;
+import java.util.function.BooleanSupplier;
+
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,36 +25,51 @@ import org.openqa.selenium.logging.LogType;
 import java.util.Arrays;
 
 /**
- * Page class representing the "Dokument Hochladen" (Document Upload) page
+ * Seite für das Hochladen von Dokumenten
  */
 public class DokumentHochladenPage extends BasePage {
 
+    /**
+     * Logger für die DokumentHochladenPage
+     */
     private static final Logger logger = LoggerFactory.getLogger(DokumentHochladenPage.class);
 
+    /**
+     * Konstruktor für die DokumentHochladenPage
+     */
     public DokumentHochladenPage() {
         PageFactory.initElements(Driver.getDriver(), this);
     }
 
-    // Document Upload Elements
+    /**
+     * Element für das Hochladen von Dokumenten
+     */
     @FindBy(css = ".dropzone__area")
     private WebElement dropZone;
 
+    /**
+     * Weiter Button
+     */
     @FindBy(css = "button.btn.btn--nav-next")
     private WebElement weiterButton;
 
-    // Document Type Selection
+    /**
+     * Document Type Selection
+     */
     @FindBy(id = "dokumentTyp")  // Update with actual ID
     private WebElement dokumentTypDropdown;
 
-    // Uploaded Documents List
+    // Element für hochgeladene Dokument
     @FindBy(xpath = "//div[contains(@class, 'uploaded-files')]//div[@class='file-item']")  // Update with actual locator
     private List<WebElement> uploadedDocuments;
 
-    // Delete Document Buttons
+    /**
+     * Delete Document Buttons
+     */
     @FindBy(xpath = "//button[contains(@class, 'delete-file')]")  // Update with actual locator
     private List<WebElement> deleteButtons;
 
-    // Navigation Buttons
+    // 
     @FindBy(xpath = "//button[contains(text(), 'Zurück')]")  // Update with actual locator
     private WebElement zurueckButton;
 
@@ -63,19 +81,33 @@ public class DokumentHochladenPage extends BasePage {
     @FindBy(xpath = "//div[contains(@class, 'upload-status')]")  // Update with actual locator
     private WebElement uploadStatusMessage;
 
+    /**
+     * Error Message
+     */
     @FindBy(xpath = "//div[contains(@class, 'error-message')]")  // Update with actual locator
     private WebElement errorMessage;
 
+    /**
+     * File Input
+     */
     @FindBy(xpath = "//*[@id='docTransferDropzone']")
     private WebElement fileInput;
 
+    /**
+     * Upload Progress
+     */
     @FindBy(css = ".upload-progress")
     private WebElement uploadProgress;
 
+    /**
+     * Weiter Button in Dokument Hochladen Page
+     */
     @FindBy (xpath = "//*[@id='kategorieDocumentTransferKlapp-weiter-button']")
     private WebElement weiterButtonInDokumentHochladungPage;
 
-    // Methods for interacting with upload elements
+    /**
+     * Methoden für das Interagieren mit Upload Elementen
+     */
     public void uploadDocument(String filePath) {
         waitForPageLoad();
         wait.until(ExpectedConditions.elementToBeClickable(dropZone));
@@ -85,22 +117,35 @@ public class DokumentHochladenPage extends BasePage {
         //takeScreenshot("document-upload-after");
     }
 
+    /**
+     * Select Document Type
+     * @param dokumentTyp
+     */
     public void selectDokumentTyp(String dokumentTyp) {
-        org.openqa.selenium.support.ui.Select select = new org.openqa.selenium.support.ui.Select(dokumentTypDropdown);
+        Select select = new Select(dokumentTypDropdown);
         select.selectByVisibleText(dokumentTyp);
     }
 
+    /**
+     * Delete Document
+     * @param index
+     */
     public void deleteDocument(int index) {
         if (index < deleteButtons.size()) {
             deleteButtons.get(index).click();
         }
     }
 
-    // Navigation methods
+    /**
+     * Zurück Button
+     */
     public void clickZurueck() {
         zurueckButton.click();
     }
 
+    /**
+     * Weiter Button
+     */
     public void clickWeiter() {
         waitForElementToBeClickable(weiterButton);
         highlightElement(weiterButton);
@@ -110,39 +155,68 @@ public class DokumentHochladenPage extends BasePage {
         logger.info("Clicked Weiter button on document upload page");
     }
 
+    /**
+     * Click Dokument Upload Info
+     */
     public void clickDokumentUploadInfo() {
         dokumentUploadInfoIcon.click();
     }
 
-    // Getter methods for verification purposes
+    /**
+     * Getter methods für die Verifikation
+     */
     public int getUploadedDocumentsCount() {
         return uploadedDocuments.size();
     }
 
+    /**
+     * Get Upload Status Message
+     * @return uploadStatusMessage
+     */
     public String getUploadStatusMessage() {
         return uploadStatusMessage.getText();
     }
 
+    /**
+     * Get Error Message
+     * @return errorMessage
+     */
     public String getErrorMessage() {
         return errorMessage.getText();
     }
 
+    /**
+     * Check if Weiter Button is Enabled
+     * @return weiterButton.isEnabled()
+     */
     public boolean isWeiterButtonEnabled() {
         return weiterButton.isEnabled();
     }
 
+    /**
+     * Get Uploaded Document Names
+     * @return eine Liste von hochgeladenen Dokumenten Namen
+     */
     public List<String> getUploadedDocumentNames() {
         return uploadedDocuments.stream()
                 .map(WebElement::getText)
                 .collect(java.util.stream.Collectors.toList());
     }
 
+    /**
+     * Prüft ob ein Dokument hochgeladen wurde
+     * @param documentName
+     * @return true wenn das Dokument hochgeladen wurde, false sonst
+     */
     public boolean isDocumentUploaded(String documentName) {
         return uploadedDocuments.stream()
                 .anyMatch(element -> element.getText().contains(documentName));
     }
 
-    // Drag and Drop support (if available in the application)
+    /**
+     * Drag and Drop support (if available in the application)
+     * @param filePath
+     */
     public void dragAndDropFile(String filePath) {
         // Implementation depends on how drag and drop is handled in the application
         // This is a placeholder for the functionality
@@ -158,6 +232,10 @@ public class DokumentHochladenPage extends BasePage {
         executor.executeScript(js, dropZone);
     }
 
+    /**
+     * Upload ID mit javascript drag und drop event
+     * @throws InterruptedException
+     */
     public void uploadId() throws InterruptedException {
         String filePath = System.getProperty("user.dir") + "/src/test/resources/testfiles/test-document.pdf";
         Thread.sleep(3000);
@@ -206,6 +284,9 @@ public class DokumentHochladenPage extends BasePage {
         }
     }
 
+    /**
+     * Klickt auf den Weiter Button in Dokument Hochladen Page
+     */
     public void clickingWeiterButtonInDokumentHochladungPage() {
         try {
             // Wait for any loading animations to disappear
@@ -311,6 +392,9 @@ public class DokumentHochladenPage extends BasePage {
         }
     }
 
+    /**
+     * Upload ID mit javascript DataTransfer API
+     */
     public void uploadId2() {
         String filePath = System.getProperty("user.dir") + "/src/test/resources/testfiles/test-document.pdf";
         File file = new File(filePath);
@@ -365,6 +449,9 @@ public class DokumentHochladenPage extends BasePage {
         }
     }
     
+    /**
+     * Prüft ob ein Dokument hochgeladen wurde
+     */
     private void verifyFileUpload2() {
         try {
             WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
@@ -396,7 +483,10 @@ public class DokumentHochladenPage extends BasePage {
         }
     }
     
-    // Update the dragAndDropFile method as well
+    /**
+     * Update the dragAndDropFile method as well
+     * @param filePath
+     */
     public void dragAndDropFile2(String filePath) {
         try {
             File file = new File(filePath);
@@ -482,6 +572,9 @@ public class DokumentHochladenPage extends BasePage {
     }
 
 
+    /**
+     * Upload ID für Negative Test
+     */
     public void uploadIdForNegativeTest() {
         String filePath = System.getProperty("user.dir") + "/src/test/resources/testfiles/test-document.pdf";
 
@@ -506,6 +599,9 @@ public class DokumentHochladenPage extends BasePage {
 
     }
 
+    /**
+     * Klickt auf den Zurück Button in Dokument Hochladen Page
+     */
     public void clickZurueckButtonInDokumentHochladungPage() {
         WebElement zurueckButton = Driver.getDriver().findElement(By.id("kategorieDocumentTransferKlapp-zurück-button"));
 
@@ -517,6 +613,26 @@ public class DokumentHochladenPage extends BasePage {
             throw e;
         }
         logger.info("Clicking back button to return to offer selection page");
+    }
+
+    /**
+     * Prüft ob alle erforderlichen Felder angezeigt werden
+     * @return true wenn alle erforderlichen Felder angezeigt werden, false sonst
+     */
+    public boolean isDisplayedAllRequiredFields() {
+
+        try {
+
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(15));
+            wait.until(ExpectedConditions.visibilityOf(dropZone));
+
+            boolean isDropzoneVisible = dropZone.isDisplayed();
+            logger.info("Dropzone is visible: " + isDropzoneVisible);
+            
+            return isDropzoneVisible;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 } 
