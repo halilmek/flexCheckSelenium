@@ -276,6 +276,7 @@ public class DokumentHochladenPage extends BasePage {
             WebElement uploadedFile = wait.until(ExpectedConditions.presenceOfElementLocated(
                 By.cssSelector(".document-item .document-item__name")
             ));
+            logger.info("Uploaded file: {}", uploadedFile.getText());
             
             return uploadedFile.getText().equals("test-document.pdf");
         } catch (Exception e) {

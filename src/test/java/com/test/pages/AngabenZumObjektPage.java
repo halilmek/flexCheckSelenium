@@ -271,19 +271,50 @@ public class AngabenZumObjektPage extends BasePage {
      * 
      * @return true, wenn die Fehlermeldung angezeigt wird, sonst false
      */
-    public boolean getErrorMessageForPostalCodeAndPurchasePrice() {
+    public boolean getErrorMessageForPostalCode() {
+        
+        String postleitzahlErrorMessage = "//*[@id='objekt-form']/section/div[2]/div[1]/div[2]/div/p";
+
+        String expectedErrorMessageForPostleitzahl = "Bitte geben Sie eine gültige Postleitzahl ein.";
+
         try {
             // 45s'ye kadar bekle
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(45));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
             
-            // Hata mesajını içeren elementi bul
-            WebElement errorMessage = wait.until(ExpectedConditions.presenceOfElementLocated(
-                By.xpath("//div[contains(@class, 'error-message') and contains(text(), 'Bitte geben Sie eine gültige Postleitzahl ein.')]")));
-            
+            WebElement errorMessageForPostleitzahl = wait.until(ExpectedConditions.presenceOfElementLocated(
+                //By.xpath("//p[contains(text(), '" + errorMessageTextForPostleitzahl + "')]")));
+                By.xpath(postleitzahlErrorMessage)));
+
+            logger.info("Error message for postal code: " + errorMessageForPostleitzahl.getText());
+
             // Eğer element bulunduysa true döndür
-            return errorMessage.isDisplayed();
+            return errorMessageForPostleitzahl.getText().contains(expectedErrorMessageForPostleitzahl);
+
         } catch (Exception e) {
             logger.error("Error message for postal code and purchase price is not displayed: {}", e.getMessage());
+            return false;
+        }
+    }
+
+
+    public boolean getErrorMessageForPurchasePrice() {
+
+        String kaufpreisErrorMessage = "//*[@id='objekt-form']/section/div[2]/div[1]/div[3]/div/p";
+
+        String expectedErrorMessageForKaufpreis = "Der Mindestwert beträgt 1,00.";
+
+        try {
+
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+            WebElement errorMessageForKaufpreis = wait.until(ExpectedConditions.presenceOfElementLocated(
+                By.xpath(kaufpreisErrorMessage)));
+
+            logger.info("Error message for purchase price: " + errorMessageForKaufpreis.getText());
+
+            return errorMessageForKaufpreis.getText().contains(expectedErrorMessageForKaufpreis);
+        } catch (Exception e) {
+            logger.error("Error message for purchase price is not displayed: {}", e.getMessage());
             return false;
         }
     }

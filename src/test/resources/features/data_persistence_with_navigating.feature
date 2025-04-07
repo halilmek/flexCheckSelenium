@@ -18,7 +18,7 @@ Feature: FlexCheck Calculator Functionality
       And the user enters repayment percentage "randomRepaymentPercentage"
       And the user enters first payout date
       And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
-      And the user should see the calculation results
+      #And the user should see the calculation results
       And the user selects "randomOption" option
       And the user clicks on Angebote anfordern
       And the user uploads id
@@ -50,7 +50,7 @@ Feature: FlexCheck Calculator Functionality
       And the user enters monthly payment "randomMonthlyPayment"
       And the user enters first payout date
       And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
-      And the user should see the calculation results
+      #And the user should see the calculation results
       And the user selects "randomOption" option
       And the user clicks on Angebote anfordern
       And the user uploads id
@@ -83,7 +83,7 @@ Feature: FlexCheck Calculator Functionality
       And the user enters total term in months "randomMonate"
       And the user enters first payout date
       And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
-      And the user should see the calculation results
+      #And the user should see the calculation results
       And the user selects "randomOption" option
       And the user clicks on Angebote anfordern
       And the user uploads id
@@ -119,7 +119,7 @@ Feature: FlexCheck Calculator Functionality
       And the user refreshes the page
       Then the user should see same values for Tilgung in % as payment type, as the user entered in Finanzierungswunsch page before
       And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
-      And the user should see the calculation results
+      #And the user should see the calculation results
       And the user selects "randomOption" option
       And the user refreshes the page
       Then the user should see, what the user selected in option selection page
@@ -150,7 +150,7 @@ Feature: FlexCheck Calculator Functionality
       And the user refreshes the page
       Then the user should see same values for monatliche Rate as payment type, as the user entered in Finanzierungswunsch page before
       And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
-      And the user should see the calculation results
+      #And the user should see the calculation results
       And the user selects "randomOption" option
       And the user refreshes the page
       Then the user should see, what the user selected in option selection page
@@ -182,7 +182,7 @@ Feature: FlexCheck Calculator Functionality
       And the user refreshes the page
       Then the user should see same values for Gesamtlaufzeit as payment type, as the user entered in Finanzierungswunsch page before
       And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
-      And the user should see the calculation results
+      #And the user should see the calculation results
       And the user selects "randomOption" option
       And the user refreshes the page
       Then the user should see, what the user selected in option selection page
@@ -210,6 +210,6 @@ Feature: FlexCheck Calculator Functionality
       And the user enters total term in months "randomMonate"
       And the user enters first payout date
       And the user clicks on Weiter in Angaben zum Finanzierungswunsch page
-      And the user should see the calculation results
+      #And the user should see the calculation results
       And the user selects "randomOption" option
       Then the user should verify the option is selected

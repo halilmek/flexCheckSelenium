@@ -334,7 +334,7 @@ public class KreditberechnungSteps {
         //logger.info("Method result: " + result);
         //System.out.println("Method result: " + offerSelectionPage.verifyingCalculatorValuesForTilgungPaymentTypeInFourthModal(randomPurchasePrice, randomLoanAmount, randomPurpose, randomRepaymentPercentage));
         //System.out.println("Method result: " + offerSelectionPage.verifyingCalculatorValuesForTilgungPaymentTypeInFourthModal(randomPurchasePrice, randomLoanAmount, randomPurpose));
-        Assertions.assertTrue(offerSelectionPage.verifyingCalculatorValuesForTilgungPaymentTypeInFourthModal(randomPurchasePrice, randomLoanAmount, randomPurpose));
+        Assertions.assertTrue(offerSelectionPage.verifyingCalculatorValuesForTilgungPaymentTypeInFourthModal(randomPurchasePrice, randomLoanAmount, randomPurpose), "Modals enthalten nicht, was der Benutzer eingegeben hat!");
 
     }
     
@@ -345,7 +345,7 @@ public class KreditberechnungSteps {
     @Then("the user should see values, as the user entered in the calculator based on Monatliche Rate payment type")
     public void verifyCalculatorValuesForMonthlyRatePaymentType() {
 
-        Assertions.assertTrue(offerSelectionPage.verifyingCalculatorValuesForMonatlicheRatePaymentType(randomPurchasePrice, randomLoanAmount, randomPurpose, randomMonthlyPayment));
+        Assertions.assertTrue(offerSelectionPage.verifyingCalculatorValuesForMonatlicheRatePaymentType(randomPurchasePrice, randomLoanAmount, randomPurpose, randomMonthlyPayment), "Modals enthalten nicht, was der Benutzer eingegeben hat!");
 
     }
     
@@ -356,7 +356,7 @@ public class KreditberechnungSteps {
     @Then("the user should see values, as the user entered in the calculator based on Gesamtlaufzeit payment type")
     public void verifyCalculatorValuesForGesamtlaufzeitPaymentType() {
 
-        Assertions.assertTrue(offerSelectionPage.verifyingCalculatorValuesForGesamtbetragPaymentType(randomPurchasePrice, randomLoanAmount, randomPurpose, randomJahreFürGesamtlaufzeit, randomMonateFürGesamtlaufzeit));
+        Assertions.assertTrue(offerSelectionPage.verifyingCalculatorValuesForGesamtbetragPaymentType(randomPurchasePrice, randomLoanAmount, randomPurpose, randomJahreFürGesamtlaufzeit, randomMonateFürGesamtlaufzeit), "Modals enthalten nicht, was der Benutzer eingegeben hat!");
     }
 
     //================DokumentHochladenPage=========
@@ -428,7 +428,7 @@ public class KreditberechnungSteps {
      */
     @Then("the user should see the success message")
     public void theUserShouldSeeTheSuccessMessage() throws Exception {
-        finalPage.isSuccessMessageDisplayed();
+        Assertions.assertTrue(finalPage.isSuccessMessageDisplayed(), "Erfolgsmeldung nicht angezeigt");
     }
 
     /**
@@ -437,7 +437,7 @@ public class KreditberechnungSteps {
      */
     @Then("the user should see the error message for file upload")
     public void theUserShouldSeeTheErrorMessageForFileUpload() {
-        finalPage.notSuccessMessageDisplayedForFileUpload();
+        Assertions.assertTrue(finalPage.notSuccessMessageDisplayedForFileUpload(), "Fehlermeldung nicht angezeigt");
     }
 
     //==========================Data Persistence Steps============================
@@ -648,6 +648,10 @@ public class KreditberechnungSteps {
         finanzierungPage.refreshPage();
     }
 
+
+
+    
+    //======================Error Messages=========================
     /**
      * Überprüft, ob die Fehlermeldung für Postleitzahl und Kaufpreis angezeigt wird.
      * Diese Methode verifiziert, dass bei ungültigen Eingaben ein entsprechender Fehlerhinweis erscheint.
@@ -655,7 +659,8 @@ public class KreditberechnungSteps {
     @Then("the user should see the error message for postal code and purchase price")
     public void theUserShouldSeeTheErrorMessageForPostalCodeAndPurchasePrice() {
 
-        Assertions.assertTrue(angabenZumObjektPage.getErrorMessageForPostalCodeAndPurchasePrice(), "Error message verification failed");
+        Assertions.assertTrue(angabenZumObjektPage.getErrorMessageForPostalCode(), "Error message verification failed");
+        Assertions.assertTrue(angabenZumObjektPage.getErrorMessageForPurchasePrice(), "Error message verification failed");
     }
 
     /**

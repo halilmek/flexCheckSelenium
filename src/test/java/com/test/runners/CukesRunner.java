@@ -14,7 +14,7 @@ import org.junit.platform.suite.api.*;
     @ConfigurationParameter(key = "cucumber.plugin", value = "pretty, html:target/cucumber-reports/cucumber.html, json:target/cucumber-reports/cucumber.json"),
     @ConfigurationParameter(key = "cucumber.execution.parallel.enabled", value = "true"),
     @ConfigurationParameter(key = "cucumber.execution.parallel.config.strategy", value = "fixed"),
-    @ConfigurationParameter(key = "cucumber.execution.parallel.config.fixed.parallelism", value = "3"),
+    @ConfigurationParameter(key = "cucumber.execution.parallel.config.fixed.parallelism", value = "5"),
     @ConfigurationParameter(key = "cucumber.filter.tags", value = "@wip")
 })
 public class CukesRunner {

@@ -167,15 +167,15 @@ public class FinalPage extends BasePage {
         while (!messageFound && retry < maxRetries) {
             String bodyText = (String) js1.executeScript("return document.body.innerText;");
             if (bodyText.contains("konnte nicht hochgeladen werden")) {
-                System.out.println("Başarı mesajı bulundu!");
+                System.out.println("Fehlermeldung gefunden!");
                 System.out.println(bodyText);
                 messageFound = true;
             } else {
-                System.out.println("Mesaj bekleniyor...");
+                System.out.println("Fehlermeldung nicht gefunden...");
             }
            
             try {
-                Thread.sleep(500); // 500ms bekle
+                Thread.sleep(1000); // 500ms bekle
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

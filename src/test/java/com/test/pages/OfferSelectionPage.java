@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -866,6 +867,13 @@ public class OfferSelectionPage extends BasePage {
 
     }
 
+    /**
+     * Überprüft die Rechner-Werte für den Tilgungs-Zahlungstyp im vierten Modal-Dialog
+     * Extrahiert und validiert verschiedene Finanzierungsdetails aus dem vierten Modal
+     * 
+     * @param params Zusätzliche optionale Parameter für die Validierung
+     * @return true, wenn die Überprüfung erfolgreich ist, sonst false
+     */
     public boolean verifyingCalculatorValuesForTilgungPaymentTypeInFourthModal
     (String... params) {
 
@@ -893,6 +901,14 @@ public class OfferSelectionPage extends BasePage {
             String elementText = "return Array.from(document.querySelectorAll('[id^=details-berechnung] .text-right')).map(element => element.innerText)";
 
             extractedValues = (List<String>) jsExecutor.executeScript(elementText);
+
+            List<String> filteredValues = extractedValues;
+
+            IntStream.range(0, filteredValues.size()).
+            filter(i -> i % 13 < 3).
+            forEach(i -> {
+                logger.info("extractedValues[{}]: {}", i, filteredValues.get(i));
+            });
             
 
             logger.info("params[0]: {}", params[0]);
@@ -942,6 +958,15 @@ public class OfferSelectionPage extends BasePage {
     }
 
 
+    /**
+     * Überprüft die Rechner-Werte für den Monatlichen-Zahlungstyp
+     * 
+     * @param randomPurchasePrice Der zufällig generierte Kaufpreis
+     * @param randomLoanAmount Der zufällig generierte Nettodarlehensbetrag
+     * @param randomPurpose Der zufällig generierte Verwendungszweck
+     * @param randomMonthlyPayment Der zufällig generierte Monatliche Rate
+     * @return true, wenn die Überprüfung erfolgreich ist, sonst false
+     */
     public boolean verifyingCalculatorValuesForMonatlicheRatePaymentType
     (String randomPurchasePrice, String randomLoanAmount, String randomPurpose, String randomMonthlyPayment) {
 
@@ -975,6 +1000,16 @@ public class OfferSelectionPage extends BasePage {
     }
 
 
+    /**
+     * Überprüft die Rechner-Werte für den Gesamtbetrag-Zahlungstyp
+     * 
+     * @param randomPurchasePrice Der zufällig generierte Kaufpreis
+     * @param randomLoanAmount Der zufällig generierte Nettodarlehensbetrag
+     * @param randomPurpose Der zufällig generierte Verwendungszweck
+     * @param randomJahreFürGesamtlaufzeit Der zufällig generierte Jahre für Gesamtlaufzeit
+     * @param randomMonateFürGesamtlaufzeit Der zufällig generierte Monate für Gesamtlaufzeit
+     * @return true, wenn die Überprüfung erfolgreich ist, sonst false
+     */
     public boolean verifyingCalculatorValuesForGesamtbetragPaymentType
     (String randomPurchasePrice, String randomLoanAmount, String randomPurpose, String randomJahreFürGesamtlaufzeit, String randomMonateFürGesamtlaufzeit) {
 
@@ -1016,6 +1051,12 @@ public class OfferSelectionPage extends BasePage {
 
 
 
+    /**
+     * Normalisiert eine Zahl, indem Tausendertrennzeichen entfernt, Kommas durch Punkte ersetzt und nachfolgende Nullen entfernt werden
+     * 
+     * @param value Der zu normalisierende Wert
+     * @return Der normalisierte Wert
+     */
     private String normalizeNumber(String value) {
         if (value == null) return null;
         // Remove thousand separators, replace comma with dot for decimals, and remove trailing zeros
@@ -1154,6 +1195,9 @@ public class OfferSelectionPage extends BasePage {
         return allModalValues;
     }
     
+    /**
+     * Stellt sicher, dass kein Modal offen ist
+     */
     private void ensureNoModalIsOpen() {
         try {
             List<WebElement> openModals = driver.findElements(
@@ -1170,7 +1214,12 @@ public class OfferSelectionPage extends BasePage {
             logger.warn("Error checking for open modals: {}", e.getMessage());
         }
     }
-    
+
+    /**
+     * Schließt ein Modal
+     * 
+     * @param modal Das zu schließende Modal
+     */
     private void closeModal(WebElement modal) {
         try {
             // Try clicking close button
@@ -1220,7 +1269,10 @@ public class OfferSelectionPage extends BasePage {
             logger.error("Error closing modal: {}", e.getMessage());
         }
     }
-    
+
+    /**
+     * Schließt das aktuelle Modal
+     */
     private void closeCurrentModal() {
         try {
             WebElement modal = driver.findElement(By.cssSelector(".modal.show, .modal[style*='display: block']"));
@@ -1335,6 +1387,11 @@ public class OfferSelectionPage extends BasePage {
         return allValuesMatch;
     }
 
+    /**
+     * Extrahieert und verarbeitet die Werte aus dem aktuellen Modal
+     * 
+     * @return Ein Map-Objekt mit den extrahierten Werten
+     */
     private Map<String, String> getDetailsValues() {
         Map<String, String> values = new HashMap<>();
         try {
@@ -1526,6 +1583,9 @@ public class OfferSelectionPage extends BasePage {
         return selectedOption.getAttribute("value");
     }
 
+    /**
+     * Klickt auf den Zurück-Button in der Angebotsauswahlseite
+     */
     public void clickZurueckButtonInOfferSelectionPage() {
         WebElement zurueckButton = Driver.getDriver().findElement(By.id("sollzinsbindungen-zurück-button"));
 
@@ -1541,7 +1601,12 @@ public class OfferSelectionPage extends BasePage {
         logger.info("Clicking back button to return to 	Angaben zum Finanzierungswunsch page");
     }
 
-
+    /**
+     * Überprüft die Auswahl der Option in der Angebotsauswahlseite
+     * 
+     * @param randomOption Die zufällig generierte Option
+     * @return true, wenn die Auswahl korrekt ist, sonst false
+     */
     public boolean verifySelectedOption(String randomOption) {
 
         logger.info("Verifying selected option persistence");
