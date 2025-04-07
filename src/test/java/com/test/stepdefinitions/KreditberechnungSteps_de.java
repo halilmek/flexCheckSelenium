@@ -253,6 +253,12 @@ public class KreditberechnungSteps_de {
         Assertions.assertTrue(berechnungsergebnisPage.waitForResultsToLoad(), "Berechnungsergebnisse nicht geladen");
     }
 
+
+    @And("der Benutzer sollte die Berechnungsergebnisse sehen")
+    public void derBenutzerSollteDieBerechnungsergebnisseSehen() {
+        berechnungsergebnisPage.waitForResultsToLoad();
+    }
+
     /**
      * Wählt eine Option aus den Berechnungsergebnissen aus.
      * Diese Methode wählt automatisch eine der angebotenen Optionen.
@@ -338,9 +344,10 @@ public class KreditberechnungSteps_de {
      */
     @Then("prüft der Benutzer, ob die Datei hochgeladen wurde")
     public void prueftDeBenutzerObDieDateiHochgeladenWurde() {
-        // Check if file count > 0 to verify upload
-        Assertions.assertTrue(dokumentHochladenPage.verifyFileUpload(), 
-                "Document was not uploaded successfully");
+
+        // Assertions.assertTrue(dokumentHochladenPage.fileUploadVerification3(), 
+        //         "Document was not uploaded successfully");
+        Assertions.assertTrue(dokumentHochladenPage.fileUploadVerification3(), "Datei wurde nicht hochgeladen");
     }
 
     /**

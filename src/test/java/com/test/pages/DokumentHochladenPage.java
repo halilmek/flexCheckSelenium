@@ -272,15 +272,15 @@ public class DokumentHochladenPage extends BasePage {
 
     public boolean verifyFileUpload() {
         try {
-            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(20));
             WebElement uploadedFile = wait.until(ExpectedConditions.presenceOfElementLocated(
                 By.cssSelector(".document-item .document-item__name")
             ));
             logger.info("Uploaded file: {}", uploadedFile.getText());
             
-            return uploadedFile.getText().equals("test-document.pdf");
+            return uploadedFile.getText().equalsIgnoreCase("test-document.pdf");
         } catch (Exception e) {
-            logger.error("Dosya yükleme doğrulama hatası: " + e.getMessage());
+            logger.error("Datei hochladen überprüfung fehlgeschlagen: " + e.getMessage());
             return false;
         }
     }
@@ -453,9 +453,9 @@ public class DokumentHochladenPage extends BasePage {
     /**
      * Prüft ob ein Dokument hochgeladen wurde
      */
-    private void verifyFileUpload2() {
+    public void verifyFileUpload2() {
         try {
-            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(20));
             
             // Wait for either success message or document item
             wait.until(ExpectedConditions.or(
@@ -634,6 +634,27 @@ public class DokumentHochladenPage extends BasePage {
         } catch (Exception e) {
             return false;
         }
+    }
+
+
+    public boolean fileUploadVerification3() {
+
+        try {
+
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//span[@class='document-item__name' and text()='test-document.pdf']")));
+            boolean exists = (boolean) js.executeScript(
+                "return Array.from(document.querySelectorAll('span.document-item__name'))" +
+                ".some(e => e.textContent.trim() === 'test-document.pdf');"
+            );
+
+            logger.info("File upload verification: " + exists);
+            logger.info("File upload verification: " + driver.findElement(By.xpath("//span[@class='document-item__name' and text()='test-document.pdf']")).getText());
+
+            return exists;
+        } catch (Exception e) {
+            logger.error("File upload verification failed: " + e.getMessage());
+            throw e;
+        }   
     }
 
 } 

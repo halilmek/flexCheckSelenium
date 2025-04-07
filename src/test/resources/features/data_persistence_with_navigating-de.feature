@@ -19,7 +19,7 @@ Funktionalität: FlexCheck Rechner Funktionalität
       Und der Benutzer Tilgungsprozentsatz "randomRepaymentPercentage" eingibt
       Und der Benutzer das erste Auszahlungsdatum eingibt
       Und der Benutzer auf Weiter in der Angaben zum Finanzierungswunsch Seite klickt
-      #Und der Benutzer sollte die Berechnungsergebnisse sehen
+      Und der Benutzer sollte die Berechnungsergebnisse sehen
       Und der Benutzer wählt "randomOption" Option
       Und der Benutzer klickt auf Angebote anfordern
       Und der Benutzer lädt seine ID hoch
@@ -51,7 +51,7 @@ Funktionalität: FlexCheck Rechner Funktionalität
       Und der Benutzer monatliche Zahlung "randomMonthlyPayment" eingibt
       Und der Benutzer das erste Auszahlungsdatum eingibt
       Und der Benutzer auf Weiter in der Angaben zum Finanzierungswunsch Seite klickt
-      #Und der Benutzer sollte die Berechnungsergebnisse sehen
+      Und der Benutzer sollte die Berechnungsergebnisse sehen
       Und der Benutzer wählt "randomOption" Option
       Und der Benutzer klickt auf Angebote anfordern
       Und der Benutzer lädt seine ID hoch
@@ -84,7 +84,7 @@ Funktionalität: FlexCheck Rechner Funktionalität
       Und der Benutzer Gesamtlaufzeit in Monaten "randomMonate" eingibt
       Und der Benutzer das erste Auszahlungsdatum eingibt
       Und der Benutzer auf Weiter in der Angaben zum Finanzierungswunsch Seite klickt
-      #Und der Benutzer sollte die Berechnungsergebnisse sehen
+      Und der Benutzer sollte die Berechnungsergebnisse sehen
       Und der Benutzer wählt "randomOption" Option
       Und der Benutzer klickt auf Angebote anfordern
       Und der Benutzer lädt seine ID hoch
@@ -120,7 +120,7 @@ Funktionalität: FlexCheck Rechner Funktionalität
       Und der Benutzer die Seite aktualisiert
       Dann sollte der Benutzer die gleichen Werte für Tilgung in % als Zahlungsart sehen, die er zuvor auf der Finanzierungswunsch-Seite eingegeben hat
       Und der Benutzer auf Weiter in der Angaben zum Finanzierungswunsch Seite klickt
-      #Und der Benutzer sollte die Berechnungsergebnisse sehen
+      Und der Benutzer sollte die Berechnungsergebnisse sehen
       Und der Benutzer wählt "randomOption" Option
       Und der Benutzer die Seite aktualisiert
       Dann sollte der Benutzer sehen, was er auf der Optionsauswahlseite ausgewählt hat
@@ -151,7 +151,7 @@ Funktionalität: FlexCheck Rechner Funktionalität
       Und der Benutzer die Seite aktualisiert
       Dann sollte der Benutzer die gleichen Werte für monatliche Rate als Zahlungsart sehen, die er zuvor auf der Finanzierungswunsch-Seite eingegeben hat
       Und der Benutzer auf Weiter in der Angaben zum Finanzierungswunsch Seite klickt
-      #Und der Benutzer sollte die Berechnungsergebnisse sehen
+      Und der Benutzer sollte die Berechnungsergebnisse sehen
       Und der Benutzer wählt "randomOption" Option
       Und der Benutzer die Seite aktualisiert
       Dann sollte der Benutzer sehen, was er auf der Optionsauswahlseite ausgewählt hat
@@ -183,7 +183,7 @@ Funktionalität: FlexCheck Rechner Funktionalität
       Und der Benutzer die Seite aktualisiert
       Dann sollte der Benutzer die gleichen Werte für Gesamtlaufzeit als Zahlungsart sehen, die er zuvor auf der Finanzierungswunsch-Seite eingegeben hat
       Und der Benutzer auf Weiter in der Angaben zum Finanzierungswunsch Seite klickt
-      #Und der Benutzer sollte die Berechnungsergebnisse sehen
+      Und der Benutzer sollte die Berechnungsergebnisse sehen
       Und der Benutzer wählt "randomOption" Option
       Und der Benutzer die Seite aktualisiert
       Dann sollte der Benutzer sehen, was er auf der Optionsauswahlseite ausgewählt hat
@@ -211,6 +211,6 @@ Funktionalität: FlexCheck Rechner Funktionalität
       Und der Benutzer Gesamtlaufzeit in Monaten "randomMonate" eingibt
       Und der Benutzer das erste Auszahlungsdatum eingibt
       Und der Benutzer auf Weiter in der Angaben zum Finanzierungswunsch Seite klickt
-      #Und der Benutzer sollte die Berechnungsergebnisse sehen
+      Und der Benutzer sollte die Berechnungsergebnisse sehen
       Und der Benutzer wählt "randomOption" Option
       Dann sollte der Benutzer überprüfen, dass die Option ausgewählt ist 

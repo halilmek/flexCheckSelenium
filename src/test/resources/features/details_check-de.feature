@@ -19,7 +19,7 @@ Funktionalität: FlexCheck Rechner Funktionalität
         Und der Benutzer Rückzahlungsart "Tilgung in %" auswählt
         Und der Benutzer das erste Auszahlungsdatum eingibt
         Und der Benutzer auf Weiter in der Angaben zum Finanzierungswunsch Seite klickt
-        #Und der Benutzer sollte die Berechnungsergebnisse sehen
+        Und der Benutzer sollte die Berechnungsergebnisse sehen
         #Und der Benutzer klickt auf den Button Details anzeigen
         Dann sollte der Benutzer die Werte sehen, die er im Rechner basierend auf der Zahlungsart Tilgung in % eingegeben hat
         #Und der Benutzer wählt "randomOption" Option
@@ -37,7 +37,7 @@ Funktionalität: FlexCheck Rechner Funktionalität
         Und der Benutzer monatliche Zahlung "randomMonthlyPayment" eingibt
         Und der Benutzer das erste Auszahlungsdatum eingibt
         Und der Benutzer auf Weiter in der Angaben zum Finanzierungswunsch Seite klickt
-        #Und der Benutzer sollte die Berechnungsergebnisse sehen
+        Und der Benutzer sollte die Berechnungsergebnisse sehen
         Und der Benutzer klickt auf den Button Details anzeigen
         Dann sollte der Benutzer die Werte sehen, die er im Rechner basierend auf der Zahlungsart Monatliche Rate eingegeben hat
         Und der Benutzer wählt "randomOption" Option
@@ -56,7 +56,7 @@ Funktionalität: FlexCheck Rechner Funktionalität
         Und der Benutzer Gesamtlaufzeit in Monaten "randomMonate" eingibt
         Und der Benutzer das erste Auszahlungsdatum eingibt
         Und der Benutzer auf Weiter in der Angaben zum Finanzierungswunsch Seite klickt
-        #Und der Benutzer sollte die Berechnungsergebnisse sehen
+        Und der Benutzer sollte die Berechnungsergebnisse sehen
         Und der Benutzer klickt auf den Button Details anzeigen
         Dann sollte der Benutzer die Werte sehen, die er im Rechner basierend auf der Zahlungsart Gesamtlaufzeit eingegeben hat
         Und der Benutzer wählt "randomOption" Option 
